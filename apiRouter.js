@@ -20,6 +20,8 @@ exports.router = (() => {
     apiRouter.route('/utilisateur/createStructure/').post(utilisateurCtrl.createStructure);
     apiRouter.route('/utilisateur/profile/').get(utilisateurCtrl.getProfile);
     apiRouter.route('/utilisateur/listStructure/').get(utilisateurCtrl.getAllStructure);
+    apiRouter.route('/utilisateur/statusChange:id').put(utilisateurCtrl.onOffStatus);
+
 
 
     return apiRouter;
