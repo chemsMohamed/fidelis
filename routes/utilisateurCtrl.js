@@ -208,4 +208,34 @@ module.exports = {
       return res.status(404).json({ error: "cannot find users" });
     }
   },
+  onOffStatus: async (req, res) => {
+    //getting auth header
+
+    var id = req.params.id;
+
+    try {
+      // const userfond = await models.User.findOne({ where: { id: userId } });
+      // if (!userfond) {
+      //   return res.status(404).json({ error: "user not found ", userId });
+      // }
+      const user = await models.User.findOne({ where: { id: id } });
+      if (!user) {
+        return res.status(404).json({ error: "cannot find user" });
+      }
+      console.log(!user.status);
+
+      await user
+        .update({
+          status: !user.status, // Inverse la valeur de status en un booléen
+        })
+        .then(() => {
+          return res.status(201).json("status changed" + user.status);
+        })
+        .catch((err) => {
+          return res.status(500).json({ error: "cannot update user" });
+        });
+    } catch {
+      return res.status(404).json({ error: "erreur cote back-end " });
+    }
+  },
 }
