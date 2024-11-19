@@ -14,7 +14,7 @@ module.exports = {
     */
     await queryInterface.bulkInsert('Roles', [
       { role: 'admin' },
-      { role: 'controleur' }
+      { role: 'commerciale' }
       
     ], {});
   },

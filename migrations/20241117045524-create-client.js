@@ -25,6 +25,10 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
+      localisation: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
       numeroTel: {
         allowNull: true,
         type: Sequelize.INTEGER

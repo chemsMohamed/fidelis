@@ -16,9 +16,11 @@ module.exports = {
       { 
         nom: 'admin',
         prenom: 'ADMIN',
-        phone: 123456,
+        numeroTel: 123456,
+        code: '$2a$12$/Ealz6ZIUVipr2XZNyKYRu2zfLgMoh/eF9CWlTgfeAl5s.VqNDuTu',
         email: 'chems@gmail.com',
-        motDePasse: '$2a$12$96vlfVygnxTkX9dvw8RsquN7L/57Dac4Vx507//9qFr0jsqnt30/m'
+        motDePasse: '$2a$12$96vlfVygnxTkX9dvw8RsquN7L/57Dac4Vx507//9qFr0jsqnt30/m',
+        roleId:1
        },
       
       

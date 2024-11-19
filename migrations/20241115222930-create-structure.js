@@ -13,31 +13,36 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
+      nomBoss: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      localisation: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
       numeroTel: {
         allowNull: false,
         type: Sequelize.INTEGER
       },
       codeUnique: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       codeCommercial: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
-      roleId: {
+      statut: {
+        defaultValue:true,
+        allowNull: false,
+        type: Sequelize.BOOLEAN
+      },
+      activiteId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references:{
-          model:'Roles',
-          key: 'id'
-        }
-      },
-      serviceId: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references:{
-          model:'Services',
+          model:'Activites',
           key: 'id'
         }
       },

@@ -9,14 +9,25 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      roleId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references:{
+          model:'Roles',
+          key: 'id'
+        }
+      },
       nom: {
         type: Sequelize.STRING
       },
       prenom: {
         type: Sequelize.STRING
       },
-      phone: {
+      numeroTel: {
         type: Sequelize.INTEGER
+      },
+      code: {
+        type: Sequelize.STRING
       },
       email: {
         type: Sequelize.STRING

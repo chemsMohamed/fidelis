@@ -12,9 +12,9 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    await queryInterface.bulkInsert('Services', [
-      { nomService: 'admin' },
-      { nomService: 'controleur' }
+    await queryInterface.bulkInsert('Activites', [
+      { domaine: 'salon de coiffure' },
+      { domaine: 'pressing' }
       
     ], {});
   },

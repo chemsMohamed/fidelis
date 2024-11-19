@@ -11,12 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      models.Structure.belongsTo(models.Role,{
-        fareingnKey:{
-          allowNull:false
-        }
-      });
-      models.Structure.belongsTo(models.Service,{
+      
+      models.Structure.belongsTo(models.Activite,{
         fareingnKey:{
           allowNull:false
         }
@@ -32,12 +28,14 @@ module.exports = (sequelize, DataTypes) => {
   }
   Structure.init({
     nom: DataTypes.STRING,
+    nomBoss: DataTypes.STRING,
     numeroTel: DataTypes.INTEGER,
-    codeUnique: DataTypes.INTEGER,
-    codeCommercial: DataTypes.INTEGER,
-    serviceId: DataTypes.INTEGER,
+    localisation: DataTypes.STRING,
+    codeUnique: DataTypes.STRING,
+    codeCommercial: DataTypes.STRING,
+    statut: DataTypes.BOOLEAN,
     utilisateurId: DataTypes.INTEGER,
-    roleId: DataTypes.INTEGER
+    activiteId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Structure',

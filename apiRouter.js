@@ -18,8 +18,10 @@ exports.router = (() => {
     // route propre a l'utilisateur .....................................
     apiRouter.route('/utilisateur/login/').post(utilisateurCtrl.login);
     apiRouter.route('/utilisateur/createStructure/').post(utilisateurCtrl.createStructure);
+    apiRouter.route('/utilisateur/createUtilisateur/').post(utilisateurCtrl.createUtilisateur);
     apiRouter.route('/utilisateur/profile/').get(utilisateurCtrl.getProfile);
     apiRouter.route('/utilisateur/listStructure/').get(utilisateurCtrl.getAllStructure);
+    apiRouter.route('/utilisateur/listCommercial/').get(utilisateurCtrl.getAllCommercial);
     apiRouter.route('/utilisateur/statusChange:id').put(utilisateurCtrl.onOffStatus);
 
 
