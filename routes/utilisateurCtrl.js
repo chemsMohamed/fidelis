@@ -36,6 +36,8 @@ module.exports = {
       if (!isPasswordValid) {
         return res.status(403).json({ error: "invalid password" });
       }
+      
+      const role = models.Role.findOne({ where: { id: utilisateur.roleId } })
 
 
       // Generate token and send successful response
@@ -45,7 +47,7 @@ module.exports = {
         prenom: utilisateur.prenom,
         phone: utilisateur.phone,
         email: utilisateur.email,
-
+        role:role.role,
         token,
 
       });
@@ -61,12 +63,13 @@ module.exports = {
     var nom = req.body.nom;
     var prenom = req.body.prenom;
     var numeroTel = req.body.numeroTel;
-    var code = req.body.codeCommercial;
+    var code = req.body.code;
+    var sexe = req.body.sexe;
     var email = req.body.email;
     var motDePasse = req.body.motDePasse;
     var roleId = req.body.roleId;
 
-    if (!nom || !prenom || !numeroTel || !email || !motDePasse) {
+    if (!nom || !prenom || !numeroTel || !email || !motDePasse || sexe) {
       return res.status(400).json({ error: "paramètres manquants" });
     }
     try {
@@ -98,25 +101,26 @@ module.exports = {
 
         }
 
-        bcrypt.hash(generateUniqueCode(), 5, async (err, bcryptedCode) => {
-          bcrypt.hash(motDePasse, 5, async (err, bcryptedPass) => {
-            const utilisateur = await models.Utilisateur.create({
 
-              nom: nom,
-              prenom: prenom,
-              numeroTel: numeroTel,
-              code: bcryptedCode,
-              email: email,
-              motDePasse: bcryptedPass,
-              roleId: roleId,
+        bcrypt.hash(motDePasse, 5, async (err, bcryptedPass) => {
+          const utilisateur = await models.Utilisateur.create({
 
-            })
-            if (utilisateur) {
-              return res.status(201).json("nouveau utilisateur  ajouter " + utilisateur.code);
-            }
+            nom: nom,
+            prenom: prenom,
+            numeroTel: numeroTel,
+            sexe: sexe,
+            code: generateUniqueCode(),
+            email: email,
+            motDePasse: bcryptedPass,
+            roleId: roleId,
 
-          });
+          })
+          if (utilisateur) {
+            return res.status(201).json("nouveau utilisateur  ajouter =>>>   " + utilisateur.code);
+          }
+
         });
+
 
       }
     } catch (err) {
@@ -131,6 +135,7 @@ module.exports = {
     var nom = req.body.nom;
     var nomBoss = req.body.nomBoss;
     var numeroTel = req.body.numeroTel;
+    var logo = req.body.logo;
     var localisation = req.body.localisation;
     var codeCommercial = req.body.codeCommercial;
     var activiteId = req.body.activiteId;
@@ -155,33 +160,29 @@ module.exports = {
       if (generateUniqueCode()) {
 
 
-       const codeExistant = await models.Structure.findOne({ where: { codeUnique: generateUniqueCode() }})
-        
+        const codeExistant = await models.Structure.findOne({ where: { codeUnique: generateUniqueCode() } })
+
         while (codeExistant != null) {
 
           generateUniqueCode()
         }
 
-        bcrypt.hash(generateUniqueCode(), 5, async (err, bcryptedCode) => {
 
-          const structure = await models.Structure.create({
-            utilisateurId: userId,
-            nom: nom,
-            nomBoss: nomBoss,
-            numeroTel: numeroTel,
-            localisation: localisation,
-            codeUnique: bcryptedCode,
-            codeCommercial: codeCommercial,
-            activiteId: activiteId,
-          })
-          if (structure) {
-            return res.status(201).json("Nouvelle Structure cree avec success   =>>>" + structure.codeUnique);
-          }
+        const structure = await models.Structure.create({
+          utilisateurId: userId,
+          nom: nom,
+          nomBoss: nomBoss,
+          numeroTel: numeroTel,
+          localisation: localisation,
+          codeUnique: generateUniqueCode(),
+          codeCommercial: codeCommercial,
+          activiteId: activiteId,
+        })
+        if (structure) {
+          return res.status(201).json("Nouvelle Structure cree avec success   =>>>  " + structure.codeUnique);
+        }
 
-
-        });
-
-      }
+    }
     } catch (err) {
       console.error("Error retrieving test:", err);
       return res.status(500).json({ error: "Internal Server Error" });
@@ -268,7 +269,7 @@ module.exports = {
       let order = req.query.order;
 
       models.Utilisateur.findAll({
-        where:({roleId:2}),
+        where: ({ roleId: 2 }),
         order: [order != null ? order.split(":") : ["id", "ASC"]],
         attributes: fields !== "*" && fields != null ? fields.split(",") : null,
         limit: !isNaN(limit) ? limit : null,
@@ -323,4 +324,116 @@ module.exports = {
       return res.status(404).json({ error: "erreur cote back-end " });
     }
   },
+  editStructure: async (req, res) => {
+    //evoie des autorisation en entete 
+
+    var headerAuth = req.headers["authorization"];
+    var userId = jwt.getUserId(headerAuth);
+
+    var nom = req.body.nom;
+    var nomBoss = req.body.nomBoss;
+    var localisation = req.body.localisation;
+    var numeroTel = req.body.numeroTel;
+    var statut = req.body.statut;
+
+
+    var id = req.params.id;
+
+    try {
+      const admin = await models.Utilisateur.findOne({ where: { id: userId } });
+      if (!admin) {
+        return res.status(404).json({ error: "utilisateur introuvable " });
+      }
+      const structure = await models.Structure.findOne({ where: { id: id } });
+      if (!structure) {
+        return res.status(404).json({ error: " structure selectionner n'existe pas " });
+      } else {
+
+
+        await structure.update({
+
+          nom: nom ? nom : structure.nom,
+          nomBoss: nomBoss ? nomBoss : structure.nomBoss,
+          localisation: localisation ? localisation : structure.localisation,
+          numeroTel: numeroTel ? numeroTel : structure.numeroTel,
+          statut: statut ? statut : structure.statut, statut
+
+
+        })
+          .then(() => {
+            return res.status(201).json({ success: "structure Modifier" });
+          })
+          .catch((err) => {
+            return res.status(500).json({ error: "erreur lors de la modification de la structure" });
+          });
+
+
+      }
+
+
+
+    } catch (err) {
+      console.error("Erreur lors de la récupération du test :", err);
+      return res.status(500).json({ error: "Erreur interne du serveur" });
+    }
+
+
+  },
+  editUtilisateur: async (req, res) => {
+    //evoie des autorisation en entete 
+
+    var headerAuth = req.headers["authorization"];
+    var userId = jwt.getUserId(headerAuth);
+
+    var nom = req.body.nom;
+    var prenom = req.body.prenom;
+    var numeroTel = req.body.numeroTel;
+    //var code = req.body.codeCommercial;
+    var email = req.body.email;
+    var motDePasse = req.body.motDePasse;
+    var roleId = req.body.roleId;
+
+    var id = req.params.id;
+
+    try {
+      const admin = await models.Utilisateur.findOne({ where: { id: userId } });
+      if (!admin) {
+        return res.status(404).json({ error: "utilisateur introuvable " });
+      }
+      const UtilisateurExist = await models.Utilisateur.findOne({ where: { id: id } });
+      if (!UtilisateurExist) {
+        return res.status(404).json({ error: " utilisateur selectionner n'existe pas " });
+      } else {
+        console.log("is ok ");
+        bcrypt.hash(motDePasse, 5, async (err, bcryptedPass) => {
+
+          await UtilisateurExist.update({
+
+            nom: nom ? nom : UtilisateurExist.nom,
+            prenom: prenom ? prenom : UtilisateurExist.prenom,
+            numeroTel: numeroTel ? numeroTel : UtilisateurExist.numeroTel,
+            email: email ? email : UtilisateurExist.email,
+            motDePasse: bcryptedPass ? bcryptedPass : UtilisateurExist.motDePasse,
+            roleId: roleId ? roleId : UtilisateurExist.roleId,
+
+          })
+            .then(() => {
+              return res.status(201).json({ success: "Utilisateur Modifier" });
+            })
+            .catch((err) => {
+              return res.status(500).json({ error: "erreur lors de la modification de l'utilisateur" });
+            });
+
+        });
+      }
+
+
+
+    } catch (error) {
+      console.error("Erreur lors de la récupération du test :", err);
+      return res.status(500).json({ error: "Erreur interne du serveur" });
+    }
+
+
+  }
 }

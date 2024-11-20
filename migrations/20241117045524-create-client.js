@@ -29,13 +29,25 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
+      sexe: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
+      codeQr: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
       numeroTel: {
         allowNull: true,
         type: Sequelize.INTEGER
       },
-      status: {
+      intervention1: {
         allowNull: true,
-        type: Sequelize.BOOLEAN
+        type: Sequelize.INTEGER
+      },
+      intervention2: {
+        allowNull: true,
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: true,

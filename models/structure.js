@@ -31,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     nomBoss: DataTypes.STRING,
     numeroTel: DataTypes.INTEGER,
     localisation: DataTypes.STRING,
+    logo: DataTypes.STRING,
     codeUnique: DataTypes.STRING,
     codeCommercial: DataTypes.STRING,
     statut: DataTypes.BOOLEAN,

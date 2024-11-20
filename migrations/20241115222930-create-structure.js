@@ -18,7 +18,11 @@ module.exports = {
         type: Sequelize.STRING
       },
       localisation: {
-        allowNull: false,
+        allowNull: true,
+        type: Sequelize.STRING
+      },
+      logo: {
+        allowNull: true,
         type: Sequelize.STRING
       },
       numeroTel: {
