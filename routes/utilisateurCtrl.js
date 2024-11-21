@@ -459,5 +459,26 @@ module.exports = {
       return res.status(201).json({roles: roles});
     }
     
-  }
+  },
+  getCommercial: async (req, res) => {
+
+    let fields = req.query.fields;
+    let limit = parseInt(req.query.limit);
+    let offset = parseInt(req.query.offset);
+    let order = req.query.order; 
+
+    const commercial = await models.Utilisateur.findAll({
+      where:({roleId:2}),
+      order: [order != null ? order.split(":") : ["id", "ASC"]],
+      attributes: fields !== "*" && fields != null ? fields.split(",") : null,
+      limit: !isNaN(limit) ? limit : null,
+      offset: !isNaN(offset) ? offset : null,
+
+    })
+
+    if (commercial) {
+      return res.status(201).json({commercial: commercial});
+    }
+    
+  },
 }

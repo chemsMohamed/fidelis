@@ -26,8 +26,9 @@ exports.router = (() => {
     apiRouter.route('/utilisateur/editCommercial/:id').put(utilisateurCtrl.editUtilisateur);
     apiRouter.route('/utilisateur/editStructure/:id').put(utilisateurCtrl.editStructure);
     
-    
+    // route supplementaires ..................................
     apiRouter.route('/roles').get(utilisateurCtrl.getAllRole);
+    apiRouter.route('/commercial').get(utilisateurCtrl.getCommercial);
 
     return apiRouter;
 })();
