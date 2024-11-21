@@ -165,6 +165,27 @@ module.exports = {
             return res.status(500).json({ error: "Internal Server Error" });
         }
     },
+    getAllActivite: async (req, res) => {
+
+        let fields = req.query.fields;
+        let limit = parseInt(req.query.limit);
+        let offset = parseInt(req.query.offset);
+        let order = req.query.order; 
+    
+        const activites = await models.Activite.findAll({
+    
+          order: [order != null ? order.split(":") : ["id", "ASC"]],
+          attributes: fields !== "*" && fields != null ? fields.split(",") : null,
+          limit: !isNaN(limit) ? limit : null,
+          offset: !isNaN(offset) ? offset : null,
+    
+        })
+    
+        if (activites) {
+          return res.status(201).json({activites: activites});
+        }
+        
+      },
 
 
 

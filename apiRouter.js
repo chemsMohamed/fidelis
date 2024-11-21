@@ -29,6 +29,7 @@ exports.router = (() => {
     // route supplementaires ..................................
     apiRouter.route('/roles').get(utilisateurCtrl.getAllRole);
     apiRouter.route('/commercial').get(utilisateurCtrl.getCommercial);
+    apiRouter.route('/activites').get(structureCtrl.getAllActivite);
 
     return apiRouter;
 })();

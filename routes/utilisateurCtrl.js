@@ -55,8 +55,8 @@ module.exports = {
 
       });
     } catch (error) {
-      console.error("Error logging in user:", error);
-      return res.status(500).json({ error: "unable to verify user" });
+      
+      return res.status(500).json({ error: " impossible de connecter l'utilisateur " });
     }
   },
   createUtilisateur: async (req, res) => {
@@ -291,10 +291,10 @@ module.exports = {
           });
         })
         .catch((error) => {
-          return res.status(404).json({ error: "structure non trouvé " });
+          return res.status(404).json({ error: "pas d'utilisateur trouvé " });
         });
     } catch (error) {
-      return res.status(404).json({ error: "impossible de trouver des structure" });
+      return res.status(404).json({ error: "impossible de trouver des utilisateur" });
     }
   },
   onOffStatus: async (req, res) => {
