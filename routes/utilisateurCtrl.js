@@ -20,7 +20,7 @@ module.exports = {
     if (!email || !password) {
       return res
         .status(400)
-        .json({ error: "missing parameters" });
+        .json({ error: " parametre manquants" });
     }
 
     try {
@@ -28,16 +28,19 @@ module.exports = {
       const utilisateur = await models.Utilisateur.findOne({ where: { email: email } });
 
       if (!utilisateur) {
+        return res.status(404).json({ error: " utilisateur n'existe pas " });
       }
 
       // Compare password using bcrypt
       const isPasswordValid = await bcrypt.compare(password, utilisateur.motDePasse);
 
       if (!isPasswordValid) {
-        return res.status(403).json({ error: "invalid password" });
+        return res.status(403).json({ error: "mot de passe incorect " });
       }
-      
-      const role = models.Role.findOne({ where: { id: utilisateur.roleId } })
+
+      const role = await models.Role.findOne({ where: { id: utilisateur.roleId } })
+
+
 
 
       // Generate token and send successful response
@@ -45,10 +48,10 @@ module.exports = {
       return res.status(201).json({
         nom: utilisateur.nom,
         prenom: utilisateur.prenom,
-        phone: utilisateur.phone,
+        phone: utilisateur.numeroTel,
         email: utilisateur.email,
-        role:role.role,
         token,
+        role: role.role,
 
       });
     } catch (error) {
@@ -182,7 +185,7 @@ module.exports = {
           return res.status(201).json("Nouvelle Structure cree avec success   =>>>  " + structure.codeUnique);
         }
 
-    }
+      }
     } catch (err) {
       console.error("Error retrieving test:", err);
       return res.status(500).json({ error: "Internal Server Error" });
@@ -435,5 +438,26 @@ module.exports = {
     }
 
 
+  },
+  getAllRole: async (req, res) => {
+
+    let fields = req.query.fields;
+    let limit = parseInt(req.query.limit);
+    let offset = parseInt(req.query.offset);
+    let order = req.query.order; 
+
+    const roles = await models.Role.findAll({
+
+      order: [order != null ? order.split(":") : ["id", "ASC"]],
+      attributes: fields !== "*" && fields != null ? fields.split(",") : null,
+      limit: !isNaN(limit) ? limit : null,
+      offset: !isNaN(offset) ? offset : null,
+
+    })
+
+    if (roles) {
+      return res.status(201).json({roles: roles});
+    }
+    
   }
 }

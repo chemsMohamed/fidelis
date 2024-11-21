@@ -25,8 +25,9 @@ exports.router = (() => {
     apiRouter.route('/utilisateur/statusChange/:id').put(utilisateurCtrl.onOffStatus);
     apiRouter.route('/utilisateur/editCommercial/:id').put(utilisateurCtrl.editUtilisateur);
     apiRouter.route('/utilisateur/editStructure/:id').put(utilisateurCtrl.editStructure);
-
-
+    
+    
+    apiRouter.route('/roles').get(utilisateurCtrl.getAllRole);
 
     return apiRouter;
 })();
