@@ -25,7 +25,7 @@ server.get("/", (req, res) => {
     res.status(200).send('<h1>bienvenu dans mon SERVER  </h1>');
 })
 
-server.use("/CH/", apiRouter);
+server.use("/api/fydelis/", apiRouter);
 
 server.listen("3300", () => {
     console.log(" server lancer sur le port 3300 ;) ");
