@@ -95,7 +95,7 @@ module.exports = {
         }
     },
 
-    getClient: async (req, res) => {
+    detailClient: async (req, res) => {
 
         // Récupération des informations d'authentification
         var headerAuth = req.headers["authorization"];
@@ -111,7 +111,7 @@ module.exports = {
 
             const structure = await models.Structure.findOne({ where: { id: userId } });
             if (!structure) {
-                return res.status(404).json({ error: "Utilisateur introuvable ", userId });
+                return res.status(404).json({ error: "Utilisateur introuvable " });
             }
 
             const client = await models.Client.findOne({ where: { id: id } });
@@ -185,7 +185,8 @@ module.exports = {
           return res.status(201).json({activites: activites});
         }
         
-      },
+    },
+    
 
 
 

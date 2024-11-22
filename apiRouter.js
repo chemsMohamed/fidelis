@@ -9,10 +9,9 @@ const utilisateurCtrl = require("./routes/utilisateurCtrl");
 exports.router = (() => {
     let apiRouter = express.Router();
 // routes propre a la structure ................................
-    //apiRouter.route('/structure/create/').post(structureCtrl.create);
     apiRouter.route('/structure/login/').post(structureCtrl.login);
-    //apiRouter.route('/structure/editProfile/').put(structureCtrl.updateProfile);
     apiRouter.route('/structure/profile/').get(structureCtrl.getProfile);
+    apiRouter.route('/structure/detailClient/:id').get(structureCtrl.detailClient);
     apiRouter.route('/structure/listClient/').get(structureCtrl.getAllClient);
     
     // route propre a l'utilisateur .....................................
@@ -26,6 +25,8 @@ exports.router = (() => {
     apiRouter.route('/structure/statutChange/:id').put(utilisateurCtrl.onOffStatutStructure);
     apiRouter.route('/utilisateur/editCommercial/:id').put(utilisateurCtrl.editUtilisateur);
     apiRouter.route('/utilisateur/editStructure/:id').put(utilisateurCtrl.editStructure);
+    apiRouter.route('/utilisateur/detailCommercial/:id').get(utilisateurCtrl.detailCommerciale);
+    apiRouter.route('/utilisateur/detailStructure/:id').get(utilisateurCtrl.detailStructure);
     
     // route supplementaires ..................................
     apiRouter.route('/roles').get(utilisateurCtrl.getAllRole);

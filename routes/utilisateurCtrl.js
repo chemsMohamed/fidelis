@@ -331,10 +331,17 @@ module.exports = {
           statut: !structure.statut, // Inverse la valeur de status en un booléen
         })
         .then(() => {
-          return res.status(201).json("Statut modifier   " + structure.statut);
+          if (structure.statut == true ) {
+
+            return res.status(201).json(" Statut Active ");
+            
+          }else{
+            
+            return res.status(201).json(" Statut Desactive ");
+          }
         })
         .catch((error) => {
-          return res.status(500).json({ error: "impossible de modifier la structure",error });
+          return res.status(500).json({ error: "Impossible de Modifier La Structure",error });
         });
     } catch {
       return res.status(404).json({ error: "erreur cote back-end " });
@@ -361,7 +368,15 @@ module.exports = {
           statut: !utilisateur.statut, // Inverse la valeur de status en un booléen
         })
         .then(() => {
-          return res.status(201).json("Statut modifier   " + utilisateur.statut);
+
+          if (utilisateur.statut == true ) {
+
+            return res.status(201).json(" Statut activee ");
+            
+          }else{
+            
+            return res.status(201).json(" Statut desactive ");
+          }
         })
         .catch((error) => {
           return res.status(500).json({ error: "impossible de modifier l'utilisateur",error });
@@ -572,4 +587,80 @@ module.exports = {
       return res.status(404).json({ error: "erreur cote back-end" });
     }
   },
+  detailCommerciale: async (req, res) => {
+
+    // Récupération des informations d'authentification
+    var headerAuth = req.headers["authorization"];
+    var userId = jwt.getUserId(headerAuth);
+
+    var id = req.params.id;
+
+    if (userId < 0) {
+        return res.status(400).json({ error: "connection perdu", userId });
+    }
+
+    try {
+
+        const utilisateur = await models.Utilisateur.findOne({ where: { id: userId } });
+        if (!utilisateur) {
+            return res.status(404).json({ error: "utilisateur introuvable " });
+        }
+
+        const commercial = await models.Utilisateur.findOne({ where: { id: id } });
+        if (commercial) {
+            return res.status(201).json({ 
+              id: commercial.id,
+              nom: commercial.nom,
+              prenom: commercial.prenom,
+              sexe: commercial.sexe,
+              numeroTel: commercial.numeroTel, 
+              email: commercial.email,
+              statut: commercial.statut,
+            });
+        } else {
+            return res.status(404).json({ error: "Commercial introuvable " });
+        }
+
+    } catch {
+        return res.status(404).json({ error: "erreur cote back-end " });
+    }
+},
+  detailStructure: async (req, res) => {
+
+    // Récupération des informations d'authentification
+    var headerAuth = req.headers["authorization"];
+    var userId = jwt.getUserId(headerAuth);
+
+    var id = req.params.id;
+
+    if (userId < 0) {
+        return res.status(400).json({ error: "connection perdu", userId });
+    }
+
+    try {
+
+        const utilisateur = await models.Utilisateur.findOne({ where: { id: userId } });
+        if (!utilisateur) {
+            return res.status(404).json({ error: "utilisateur introuvable " });
+        }
+
+        const structure = await models.Structure.findOne({ where: { id: id } });
+        if (structure) {
+            return res.status(201).json({ 
+              id: structure.id, 
+              nom: structure.nom, 
+              nomBoss: structure.nomBoss, 
+              numeroTel: structure.numeroTel, 
+              localisation: structure.localisation, 
+              logo: structure.logo, 
+              statut: structure.statut, 
+            });
+        } else {
+            return res.status(404).json({ error: "Structure introuvable " });
+        }
+
+    } catch {
+        return res.status(404).json({ error: "erreur cote back-end " });
+    }
+},
 }
