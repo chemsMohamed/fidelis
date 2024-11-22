@@ -55,7 +55,7 @@ module.exports = {
 
       });
     } catch (error) {
-      
+
       return res.status(500).json({ error: " impossible de connecter l'utilisateur " });
     }
   },
@@ -87,7 +87,7 @@ module.exports = {
 
       const numeroExiste = await models.Utilisateur.findOne({ where: { numeroTel: numeroTel } });
       if (numeroExiste) {
-          return res.status(400).json({ error: " Ce Numero Existe Deja " });
+        return res.status(400).json({ error: " Ce Numero Existe Deja " });
       }
 
       const UtilisateurExist = await models.Utilisateur.findOne({ where: { email: email } });
@@ -172,7 +172,7 @@ module.exports = {
 
       const numeroExiste = await models.Structure.findOne({ where: { numeroTel: numeroTel } });
       if (numeroExiste) {
-          return res.status(400).json({ error: " Ce Numero Existe Deja " });
+        return res.status(400).json({ error: " Ce Numero Existe Deja " });
       }
 
 
@@ -233,14 +233,14 @@ module.exports = {
         return res.status(404).json({ error: "utilisateur introuvable ", userId });
       }
 
-      return res.status(201).json({ 
+      return res.status(201).json({
         id: commercial.id,
         nom: commercial.nom,
         prenom: commercial.prenom,
         sexe: commercial.sexe,
-        numeroTel: commercial.numeroTel, 
+        numeroTel: commercial.numeroTel,
         email: commercial.email,
-        statut: commercial.statut, 
+        statut: commercial.statut,
       });
     } catch {
       return res.status(404).json({ error: "erreur cote back-end " });
@@ -329,7 +329,7 @@ module.exports = {
           });
         })
         .catch((error) => {
-          return res.status(404).json({ error: "pas d'utilisateur trouvé ",error });
+          return res.status(404).json({ error: "pas d'utilisateur trouvé ", error });
         });
     } catch (error) {
       return res.status(404).json({ error: "erreur cote back-end" });
@@ -356,17 +356,17 @@ module.exports = {
           statut: !structure.statut, // Inverse la valeur de status en un booléen
         })
         .then(() => {
-          if (structure.statut == true ) {
+          if (structure.statut == true) {
 
             return res.status(201).json(" Statut Active ");
-            
-          }else{
-            
+
+          } else {
+
             return res.status(201).json(" Statut Desactive ");
           }
         })
         .catch((error) => {
-          return res.status(500).json({ error: "Impossible de Modifier La Structure",error });
+          return res.status(500).json({ error: "Impossible de Modifier La Structure", error });
         });
     } catch {
       return res.status(404).json({ error: "erreur cote back-end " });
@@ -394,17 +394,17 @@ module.exports = {
         })
         .then(() => {
 
-          if (utilisateur.statut == true ) {
+          if (utilisateur.statut == true) {
 
             return res.status(201).json(" Statut activee ");
-            
-          }else{
-            
+
+          } else {
+
             return res.status(201).json(" Statut desactive ");
           }
         })
         .catch((error) => {
-          return res.status(500).json({ error: "impossible de modifier l'utilisateur",error });
+          return res.status(500).json({ error: "impossible de modifier l'utilisateur", error });
         });
     } catch {
       return res.status(404).json({ error: "erreur cote back-end " });
@@ -425,7 +425,7 @@ module.exports = {
     var id = req.params.id;
 
 
-    if (!nom || !numeroTel || !nomBoss || !localisation ) {
+    if (!nom || !numeroTel || !nomBoss || !localisation) {
       return res.status(400).json({ error: "parametres manquants" });
     }
 
@@ -498,14 +498,13 @@ module.exports = {
         return res.status(404).json({ error: " utilisateur selectionner n'existe pas " });
       } else {
         console.log("is ok ");
-        bcrypt.hash(motDePasse, 5, async (err, bcryptedPass) => {
+       
 
           await UtilisateurExist.update({
 
             nom: nom ? nom : UtilisateurExist.nom,
             prenom: prenom ? prenom : UtilisateurExist.prenom,
             numeroTel: numeroTel ? numeroTel : UtilisateurExist.numeroTel,
-           
             sexe: sexe ? sexe : UtilisateurExist.sexe,
             roleId: roleId ? roleId : UtilisateurExist.roleId,
 
@@ -517,13 +516,13 @@ module.exports = {
               return res.status(500).json({ error: "erreur lors de la modification de l'utilisateur" });
             });
 
-        });
+        
       }
 
 
 
     } catch (error) {
-      console.error("Erreur lors de la récupération du test :", err);
+      console.error("Erreur lors de la récupération du test :", error);
       return res.status(500).json({ error: "Erreur interne du serveur" });
     }
 
@@ -534,7 +533,7 @@ module.exports = {
     let fields = req.query.fields;
     let limit = parseInt(req.query.limit);
     let offset = parseInt(req.query.offset);
-    let order = req.query.order; 
+    let order = req.query.order;
 
     const roles = await models.Role.findAll({
 
@@ -546,19 +545,19 @@ module.exports = {
     })
 
     if (roles) {
-      return res.status(201).json({roles: roles});
+      return res.status(201).json({ roles: roles });
     }
-    
+
   },
   getCommercial: async (req, res) => {
 
     let fields = req.query.fields;
     let limit = parseInt(req.query.limit);
     let offset = parseInt(req.query.offset);
-    let order = req.query.order; 
+    let order = req.query.order;
 
     const commercial = await models.Utilisateur.findAll({
-      where:({roleId:2}),
+      where: ({ roleId: 2 }),
       order: [order != null ? order.split(":") : ["id", "ASC"]],
       attributes: fields !== "*" && fields != null ? fields.split(",") : null,
       limit: !isNaN(limit) ? limit : null,
@@ -567,9 +566,9 @@ module.exports = {
     })
 
     if (commercial) {
-      return res.status(201).json({commercial: commercial});
+      return res.status(201).json({ commercial: commercial });
     }
-    
+
   },
   getStructureFor: async (req, res) => {
     //getting auth header
@@ -594,7 +593,7 @@ module.exports = {
       let order = req.query.order;
 
       models.Structure.findAll({
-        where:({codeCommercial : utilisateur.code}),
+        where: ({ codeCommercial: utilisateur.code }),
         order: [order != null ? order.split(":") : ["id", "ASC"]],
         attributes: fields !== "*" && fields != null ? fields.split(",") : null,
         limit: !isNaN(limit) ? limit : null,
@@ -628,35 +627,35 @@ module.exports = {
     var id = req.params.id;
 
     if (userId < 0) {
-        return res.status(400).json({ error: "connection perdu", userId });
+      return res.status(400).json({ error: "connection perdu", userId });
     }
 
     try {
 
-        const utilisateur = await models.Utilisateur.findOne({ where: { id: userId } });
-        if (!utilisateur) {
-            return res.status(404).json({ error: "utilisateur introuvable " });
-        }
+      const utilisateur = await models.Utilisateur.findOne({ where: { id: userId } });
+      if (!utilisateur) {
+        return res.status(404).json({ error: "utilisateur introuvable " });
+      }
 
-        const commercial = await models.Utilisateur.findOne({ where: { id: id } });
-        if (commercial) {
-            return res.status(201).json({ 
-              id: commercial.id,
-              nom: commercial.nom,
-              prenom: commercial.prenom,
-              sexe: commercial.sexe,
-              numeroTel: commercial.numeroTel, 
-              email: commercial.email,
-              statut: commercial.statut,
-            });
-        } else {
-            return res.status(404).json({ error: "Commercial introuvable " });
-        }
+      const commercial = await models.Utilisateur.findOne({ where: { id: id } });
+      if (commercial) {
+        return res.status(201).json({
+          id: commercial.id,
+          nom: commercial.nom,
+          prenom: commercial.prenom,
+          sexe: commercial.sexe,
+          numeroTel: commercial.numeroTel,
+          email: commercial.email,
+          statut: commercial.statut,
+        });
+      } else {
+        return res.status(404).json({ error: "Commercial introuvable " });
+      }
 
     } catch {
-        return res.status(404).json({ error: "erreur cote back-end " });
+      return res.status(404).json({ error: "erreur cote back-end " });
     }
-},
+  },
   detailStructure: async (req, res) => {
 
     // Récupération des informations d'authentification
@@ -666,33 +665,64 @@ module.exports = {
     var id = req.params.id;
 
     if (userId < 0) {
-        return res.status(400).json({ error: "connection perdu", userId });
+      return res.status(400).json({ error: "connection perdu", userId });
     }
 
     try {
 
-        const utilisateur = await models.Utilisateur.findOne({ where: { id: userId } });
-        if (!utilisateur) {
-            return res.status(404).json({ error: "utilisateur introuvable " });
-        }
+      const utilisateur = await models.Utilisateur.findOne({ where: { id: userId } });
+      if (!utilisateur) {
+        return res.status(404).json({ error: "utilisateur introuvable " });
+      }
 
-        const structure = await models.Structure.findOne({ where: { id: id } });
-        if (structure) {
-            return res.status(201).json({ 
-              id: structure.id, 
-              nom: structure.nom, 
-              nomBoss: structure.nomBoss, 
-              numeroTel: structure.numeroTel, 
-              localisation: structure.localisation, 
-              logo: structure.logo, 
-              statut: structure.statut, 
-            });
-        } else {
-            return res.status(404).json({ error: "Structure introuvable " });
-        }
+      const structure = await models.Structure.findOne({ where: { id: id } });
+      if (structure) {
+        return res.status(201).json({
+          id: structure.id,
+          nom: structure.nom,
+          nomBoss: structure.nomBoss,
+          numeroTel: structure.numeroTel,
+          localisation: structure.localisation,
+          logo: structure.logo,
+          statut: structure.statut,
+        });
+      } else {
+        return res.status(404).json({ error: "Structure introuvable " });
+      }
 
     } catch {
-        return res.status(404).json({ error: "erreur cote back-end " });
+      return res.status(404).json({ error: "erreur cote back-end " });
     }
-},
+  },
+  addActivite: async (req, res) => {
+
+    // Récupération des informations d'authentification
+    var newActivite = req.body.activite;
+    
+
+    try {
+
+      //const activiteExist = await models.Activite.findOne({ where: { domaine: newActivite } });
+      if (activiteExist) {
+        
+      }
+
+      const activiteExist = await models.Activite.findOne({ where: { domaine: newActivite } });
+      if (!activiteExist) {
+        const activite = await models.Activite.create({
+          domaine: newActivite,
+        })
+
+        if (activite) {
+          return res.status(201).json("Nouveau Domaine d'Activite Cree  " + activite.domaine);
+        }
+      } else {
+        return res.status(403).json({ error: "Ce Domaine  D'activite Existe Deja" });
+      }
+
+    } catch {
+      return res.status(404).json({ error: "erreur cote back-end " });
+    }
+  },
+
 }
