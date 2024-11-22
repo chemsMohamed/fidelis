@@ -420,23 +420,24 @@ module.exports = {
     var nomBoss = req.body.nomBoss;
     var localisation = req.body.localisation;
     var numeroTel = req.body.numeroTel;
-    var statut = req.body.statut;
 
     var id = req.params.id;
 
 
     if (!nom || !numeroTel || !nomBoss || !localisation) {
-      return res.status(400).json({ error: "parametres manquants" });
+      return res.status(400).json({ error: "Parametres Manquants" });
     }
 
     try {
+
       const admin = await models.Utilisateur.findOne({ where: { id: userId } });
       if (!admin) {
-        return res.status(404).json({ error: "utilisateur introuvable " });
+        return res.status(404).json({ error: "Utilisateur Introuvable " });
       }
+
       const structure = await models.Structure.findOne({ where: { id: id } });
       if (!structure) {
-        return res.status(404).json({ error: " structure selectionner n'existe pas " });
+        return res.status(404).json({ error: " Structure Selectionner N'existe Pas " });
       } else {
 
 
@@ -446,7 +447,6 @@ module.exports = {
           nomBoss: nomBoss ? nomBoss : structure.nomBoss,
           localisation: localisation ? localisation : structure.localisation,
           numeroTel: numeroTel ? numeroTel : structure.numeroTel,
-          statut: statut ? statut : structure.statut, statut
 
 
         })
@@ -497,26 +497,26 @@ module.exports = {
       if (!UtilisateurExist) {
         return res.status(404).json({ error: " utilisateur selectionner n'existe pas " });
       } else {
-        console.log("is ok ");
-       
+        // console.log("is ok ");
 
-          await UtilisateurExist.update({
 
-            nom: nom ? nom : UtilisateurExist.nom,
-            prenom: prenom ? prenom : UtilisateurExist.prenom,
-            numeroTel: numeroTel ? numeroTel : UtilisateurExist.numeroTel,
-            sexe: sexe ? sexe : UtilisateurExist.sexe,
-            roleId: roleId ? roleId : UtilisateurExist.roleId,
+        await UtilisateurExist.update({
 
+          nom: nom ? nom : UtilisateurExist.nom,
+          prenom: prenom ? prenom : UtilisateurExist.prenom,
+          numeroTel: numeroTel ? numeroTel : UtilisateurExist.numeroTel,
+          sexe: sexe ? sexe : UtilisateurExist.sexe,
+          roleId: roleId ? roleId : UtilisateurExist.roleId,
+
+        })
+          .then(() => {
+            return res.status(201).json({ success: "Utilisateur Modifier !!" });
           })
-            .then(() => {
-              return res.status(201).json({ success: "Utilisateur Modifier !!" });
-            })
-            .catch((err) => {
-              return res.status(500).json({ error: "erreur lors de la modification de l'utilisateur" });
-            });
+          .catch((err) => {
+            return res.status(500).json({ error: "erreur lors de la modification de l'utilisateur" });
+          });
 
-        
+
       }
 
 
@@ -698,13 +698,13 @@ module.exports = {
 
     // Récupération des informations d'authentification
     var newActivite = req.body.activite;
-    
+
 
     try {
 
       //const activiteExist = await models.Activite.findOne({ where: { domaine: newActivite } });
       if (activiteExist) {
-        
+
       }
 
       const activiteExist = await models.Activite.findOne({ where: { domaine: newActivite } });

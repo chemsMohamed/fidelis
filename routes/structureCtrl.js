@@ -199,6 +199,67 @@ module.exports = {
         }
         
     },
+    editCommercial: async (req, res) => {
+        //evoie des autorisation en entete 
+    
+        var headerAuth = req.headers["authorization"];
+        var userId = jwt.getUserId(headerAuth);
+    
+
+        var nom = req.body.nom;
+        var prenom = req.body.prenom;
+        var numeroTel = req.body.numeroTel;
+        var sexe = req.body.sexe;
+        var localisation = req.body.localisation;
+        
+    
+        var id = req.params.id;
+    
+        if (!nom || !prenom || !numeroTel || !sexe || !localisation) {
+          return res.status(400).json({ error: "paramètres manquants" });
+        }
+    
+        try {
+
+          const structure = await models.Structure.findOne({ where: { id: userId } });
+          if (!structure) {
+            return res.status(404).json({ error: " Utilisateur introuvable " });
+          }
+          const client = await models.Client.findOne({ where: { id: id } });
+          if (!client) {
+            return res.status(404).json({ error: " utilisateur selectionner n'existe pas " });
+          } else {
+            // console.log("is ok ");
+    
+    
+            await client.update({
+    
+              nom: nom ? nom : client.nom,
+              prenom: prenom ? prenom : client.prenom,
+              numeroTel: numeroTel ? numeroTel : client.numeroTel,
+              sexe: sexe ? sexe : client.sexe,
+              localisation: localisation ? localisation : client.localisation,
+    
+            })
+              .then(() => {
+                return res.status(201).json({ success: "Utilisateur Modifier !!" });
+              })
+              .catch((err) => {
+                return res.status(500).json({ error: "erreur lors de la modification de l'utilisateur",err });
+              });
+    
+    
+          }
+    
+    
+    
+        } catch (error) {
+          console.error("Erreur lors de la récupération du test :", error);
+          return res.status(500).json({ error: "Erreur interne du serveur" });
+        }
+    
+    
+      },
     
 
 

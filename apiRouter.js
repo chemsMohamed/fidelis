@@ -4,6 +4,7 @@ let express = require("express");
 const structureCtrl = require("./routes/structureCtrl");
 const models = require ("./models");
 const utilisateurCtrl = require("./routes/utilisateurCtrl");
+const clientCtrl = require("./routes/clientCtrl");
 
 //router
 exports.router = (() => {
@@ -35,6 +36,10 @@ exports.router = (() => {
     apiRouter.route('/roles').get(utilisateurCtrl.getAllRole);
     apiRouter.route('/commercial').get(utilisateurCtrl.getCommercial);
     apiRouter.route('/activites').get(structureCtrl.getAllActivite);
+
+    //route propres au client ......................................................
+    apiRouter.route('/client/validation/:id').put(clientCtrl.validation);
+
 
     return apiRouter;
 })();
