@@ -310,7 +310,37 @@ module.exports = {
       return res.status(404).json({ error: "erreur cote back-end" });
     }
   },
-  onOffStatus: async (req, res) => {
+  onOffStatutStructure: async (req, res) => {
+    //getting auth header
+
+    var id = req.params.id;
+
+    try {
+      // const userfond = await models.User.findOne({ where: { id: userId } });
+      // if (!userfond) {
+      //   return res.status(404).json({ error: "user not found ", userId });
+      // }
+      const structure = await models.Structure.findOne({ where: { id: id } });
+      if (!structure) {
+        return res.status(404).json({ error: "Structure introuvable" });
+      }
+      console.log(!structure.statut);
+
+      await structure
+        .update({
+          statut: !structure.statut, // Inverse la valeur de status en un booléen
+        })
+        .then(() => {
+          return res.status(201).json("Statut modifier   " + structure.statut);
+        })
+        .catch((error) => {
+          return res.status(500).json({ error: "impossible de modifier la structure",error });
+        });
+    } catch {
+      return res.status(404).json({ error: "erreur cote back-end " });
+    }
+  },
+  onOffStatutCommercial: async (req, res) => {
     //getting auth header
 
     var id = req.params.id;

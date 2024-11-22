@@ -22,7 +22,8 @@ exports.router = (() => {
     apiRouter.route('/utilisateur/profile/').get(utilisateurCtrl.getProfile);
     apiRouter.route('/utilisateur/listStructure/').get(utilisateurCtrl.getAllStructure);
     apiRouter.route('/utilisateur/listCommercial/').get(utilisateurCtrl.getAllCommercial);
-    apiRouter.route('/utilisateur/statutChange/:id').put(utilisateurCtrl.onOffStatus);
+    apiRouter.route('/utilisateur/statutChange/:id').put(utilisateurCtrl.onOffStatutCommercial);
+    apiRouter.route('/structure/statutChange/:id').put(utilisateurCtrl.onOffStatutStructure);
     apiRouter.route('/utilisateur/editCommercial/:id').put(utilisateurCtrl.editUtilisateur);
     apiRouter.route('/utilisateur/editStructure/:id').put(utilisateurCtrl.editStructure);
     
