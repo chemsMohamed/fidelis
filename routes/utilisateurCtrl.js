@@ -489,6 +489,7 @@ module.exports = {
     }
 
     try {
+
       const admin = await models.Utilisateur.findOne({ where: { id: userId } });
       if (!admin) {
         return res.status(404).json({ error: "utilisateur introuvable " });

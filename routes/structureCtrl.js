@@ -199,7 +199,7 @@ module.exports = {
         }
         
     },
-    editCommercial: async (req, res) => {
+    editClient: async (req, res) => {
         //evoie des autorisation en entete 
     
         var headerAuth = req.headers["authorization"];
@@ -220,6 +220,7 @@ module.exports = {
         }
     
         try {
+
 
           const structure = await models.Structure.findOne({ where: { id: userId } });
           if (!structure) {
@@ -242,7 +243,7 @@ module.exports = {
     
             })
               .then(() => {
-                return res.status(201).json({ success: "Utilisateur Modifier !!" });
+                return res.status(201).json({ success: "Client  Modifier !!" });
               })
               .catch((err) => {
                 return res.status(500).json({ error: "erreur lors de la modification de l'utilisateur",err });

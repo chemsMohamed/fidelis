@@ -15,6 +15,7 @@ exports.router = (() => {
     apiRouter.route('/structure/profile/').get(structureCtrl.getProfile);
     apiRouter.route('/structure/detailClient/:id').get(structureCtrl.detailClient);
     apiRouter.route('/structure/listClient/').get(structureCtrl.getAllClient);
+    apiRouter.route('/structure/editClient/:id').put(structureCtrl.editClient);
     
     // route propre a l'utilisateur .....................................
 
