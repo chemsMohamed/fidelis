@@ -19,12 +19,12 @@ server.use(bodyParser.json());
 //     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 //     next();
 // });
-const corsOptions = {
-    origin:"http://localhost:3000",
-    Credential:true,
-    optionSuccessStatus:200
-}
-server.use(cors(corsOptions));
+// const corsOptions = {
+//     origin:"http://localhost:3000",
+//     Credential:true,
+//     optionSuccessStatus:200
+// }
+server.use(cors());
 //configuration de la route 
 
 server.get("/", (req, res) => {

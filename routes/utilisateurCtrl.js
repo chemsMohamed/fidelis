@@ -72,7 +72,11 @@ module.exports = {
     var motDePasse = req.body.motDePasse;
     var roleId = req.body.roleId;
 
-    if (!nom || !prenom || !numeroTel || !email || !motDePasse || sexe) {
+    if (userId < 0) {
+      return res.status(400).json({ error: "connection perdu" });
+    }
+
+    if (!nom || !prenom || !numeroTel || !email || !motDePasse || !sexe) {
       return res.status(400).json({ error: "paramètres manquants" });
     }
     try {
@@ -142,6 +146,11 @@ module.exports = {
     var localisation = req.body.localisation;
     var codeCommercial = req.body.codeCommercial;
     var activiteId = req.body.activiteId;
+
+
+    if (userId < 0) {
+      return res.status(400).json({ error: "connection perdu" });
+    }
 
     if (!nom || !numeroTel || !nomBoss || !localisation || !codeCommercial) {
       return res.status(400).json({ error: "parametres manquants" });
@@ -248,16 +257,20 @@ module.exports = {
           });
         })
         .catch((error) => {
-          return res.status(404).json({ error: "structure non trouvé " });
+          return res.status(404).json({ error: "structure introuvable " });
         });
     } catch (error) {
-      return res.status(404).json({ error: "impossible de trouver des structure" });
+      return res.status(404).json({ error: "erreur cote back-end" });
     }
   },
   getAllCommercial: async (req, res) => {
     //getting auth header
     var headerAuth = req.headers["authorization"];
     var userId = jwt.getUserId(headerAuth);
+
+    if (userId < 0) {
+      return res.status(400).json({ error: "connection perdu" });
+    }
 
     try {
 
@@ -291,10 +304,10 @@ module.exports = {
           });
         })
         .catch((error) => {
-          return res.status(404).json({ error: "pas d'utilisateur trouvé " });
+          return res.status(404).json({ error: "pas d'utilisateur trouvé ",error });
         });
     } catch (error) {
-      return res.status(404).json({ error: "impossible de trouver des utilisateur" });
+      return res.status(404).json({ error: "erreur cote back-end" });
     }
   },
   onOffStatus: async (req, res) => {
@@ -307,21 +320,21 @@ module.exports = {
       // if (!userfond) {
       //   return res.status(404).json({ error: "user not found ", userId });
       // }
-      const user = await models.User.findOne({ where: { id: id } });
-      if (!user) {
-        return res.status(404).json({ error: "cannot find user" });
+      const utilisateur = await models.Utilisateur.findOne({ where: { id: id } });
+      if (!utilisateur) {
+        return res.status(404).json({ error: "Utilisateur introuvable" });
       }
-      console.log(!user.status);
+      console.log(!utilisateur.statut);
 
-      await user
+      await utilisateur
         .update({
-          status: !user.status, // Inverse la valeur de status en un booléen
+          statut: !utilisateur.statut, // Inverse la valeur de status en un booléen
         })
         .then(() => {
-          return res.status(201).json("status changed" + user.status);
+          return res.status(201).json("Statut modifier   " + utilisateur.statut);
         })
-        .catch((err) => {
-          return res.status(500).json({ error: "cannot update user" });
+        .catch((error) => {
+          return res.status(500).json({ error: "impossible de modifier l'utilisateur",error });
         });
     } catch {
       return res.status(404).json({ error: "erreur cote back-end " });
@@ -391,7 +404,7 @@ module.exports = {
     var nom = req.body.nom;
     var prenom = req.body.prenom;
     var numeroTel = req.body.numeroTel;
-    //var code = req.body.codeCommercial;
+    var sexe = req.body.sexe;
     var email = req.body.email;
     var motDePasse = req.body.motDePasse;
     var roleId = req.body.roleId;
@@ -416,7 +429,7 @@ module.exports = {
             prenom: prenom ? prenom : UtilisateurExist.prenom,
             numeroTel: numeroTel ? numeroTel : UtilisateurExist.numeroTel,
             email: email ? email : UtilisateurExist.email,
-            motDePasse: bcryptedPass ? bcryptedPass : UtilisateurExist.motDePasse,
+            sexe: sexe ? sexe : UtilisateurExist.sexe,
             roleId: roleId ? roleId : UtilisateurExist.roleId,
 
           })
@@ -480,5 +493,53 @@ module.exports = {
       return res.status(201).json({commercial: commercial});
     }
     
+  },
+  getStructureFor: async (req, res) => {
+    //getting auth header
+    var headerAuth = req.headers["authorization"];
+    var userId = jwt.getUserId(headerAuth);
+
+
+    if (userId < 0) {
+      return res.status(400).json({ error: "connection perdu" });
+    }
+
+    try {
+
+      const utilisateur = await models.Utilisateur.findOne({ where: { id: userId } });
+      if (!utilisateur) {
+        return res.status(404).json({ error: "utilisateur introuvable" });
+      }
+
+      let fields = req.query.fields;
+      let limit = parseInt(req.query.limit);
+      let offset = parseInt(req.query.offset);
+      let order = req.query.order;
+
+      models.Structure.findAll({
+        where:({codeCommercial : utilisateur.code}),
+        order: [order != null ? order.split(":") : ["id", "ASC"]],
+        attributes: fields !== "*" && fields != null ? fields.split(",") : null,
+        limit: !isNaN(limit) ? limit : null,
+        offset: !isNaN(offset) ? offset : null,
+        include: [
+          {
+            model: models.Activite,
+            attributes: ["domaine"],
+          },
+        ],
+      })
+        .then((structureFound) => {
+          return res.status(201).json({
+            structure: structureFound
+
+          });
+        })
+        .catch((error) => {
+          return res.status(404).json({ error: "structures introuvables " });
+        });
+    } catch (error) {
+      return res.status(404).json({ error: "erreur cote back-end" });
+    }
   },
 }

@@ -38,6 +38,10 @@ module.exports = {
       motDePasse: {
         type: Sequelize.STRING
       },
+      statut: {
+        defaultValue:true,
+        type: Sequelize.BOOLEAN
+      },
       createdAt: {
         allowNull: true,
         type: Sequelize.DATE
