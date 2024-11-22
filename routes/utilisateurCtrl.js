@@ -82,8 +82,14 @@ module.exports = {
     try {
       const admin = await models.Utilisateur.findOne({ where: { id: userId } });
       if (!admin) {
-        return res.status(404).json({ error: "utilisateur introuvable " });
+        return res.status(404).json({ error: "Utilisateur Introuvable " });
       }
+
+      const numeroExiste = await models.Utilisateur.findOne({ where: { numeroTel: numeroTel } });
+      if (numeroExiste) {
+          return res.status(400).json({ error: " Ce Numero Existe Deja " });
+      }
+
       const UtilisateurExist = await models.Utilisateur.findOne({ where: { email: email } });
       if (UtilisateurExist) {
         return res.status(404).json({ error: " utilisateur existe deja dans la base de donnee " });
@@ -145,6 +151,8 @@ module.exports = {
     var logo = req.body.logo;
     var localisation = req.body.localisation;
     var codeCommercial = req.body.codeCommercial;
+    var limite1 = req.body.limite1;
+    var limite2 = req.body.limite2;
     var activiteId = req.body.activiteId;
 
 
@@ -156,9 +164,15 @@ module.exports = {
       return res.status(400).json({ error: "parametres manquants" });
     }
     try {
+
       const utilisateur = await models.Utilisateur.findOne({ where: { id: userId } });
       if (!utilisateur) {
-        return res.status(404).json({ error: "utilisateur Introuvable" });
+        return res.status(404).json({ error: "Utilisateur Introuvable" });
+      }
+
+      const numeroExiste = await models.Structure.findOne({ where: { numeroTel: numeroTel } });
+      if (numeroExiste) {
+          return res.status(400).json({ error: " Ce Numero Existe Deja " });
       }
 
 
@@ -188,6 +202,9 @@ module.exports = {
           localisation: localisation,
           codeUnique: generateUniqueCode(),
           codeCommercial: codeCommercial,
+          limite1: limite1,
+          limite2: limite2,
+          logo: logo,
           activiteId: activiteId,
         })
         if (structure) {
@@ -216,7 +233,15 @@ module.exports = {
         return res.status(404).json({ error: "utilisateur introuvable ", userId });
       }
 
-      return res.status(201).json({ utilisateur: utilisateur });
+      return res.status(201).json({ 
+        id: commercial.id,
+        nom: commercial.nom,
+        prenom: commercial.prenom,
+        sexe: commercial.sexe,
+        numeroTel: commercial.numeroTel, 
+        email: commercial.email,
+        statut: commercial.statut, 
+      });
     } catch {
       return res.status(404).json({ error: "erreur cote back-end " });
     }
@@ -397,8 +422,12 @@ module.exports = {
     var numeroTel = req.body.numeroTel;
     var statut = req.body.statut;
 
-
     var id = req.params.id;
+
+
+    if (!nom || !numeroTel || !nomBoss || !localisation ) {
+      return res.status(400).json({ error: "parametres manquants" });
+    }
 
     try {
       const admin = await models.Utilisateur.findOne({ where: { id: userId } });
@@ -440,7 +469,7 @@ module.exports = {
 
 
   },
-  editUtilisateur: async (req, res) => {
+  editCommercial: async (req, res) => {
     //evoie des autorisation en entete 
 
     var headerAuth = req.headers["authorization"];
@@ -450,11 +479,14 @@ module.exports = {
     var prenom = req.body.prenom;
     var numeroTel = req.body.numeroTel;
     var sexe = req.body.sexe;
-    var email = req.body.email;
-    var motDePasse = req.body.motDePasse;
+    //var email = req.body.email;
     var roleId = req.body.roleId;
 
     var id = req.params.id;
+
+    if (!nom || !prenom || !numeroTel || !sexe) {
+      return res.status(400).json({ error: "paramètres manquants" });
+    }
 
     try {
       const admin = await models.Utilisateur.findOne({ where: { id: userId } });
@@ -473,13 +505,13 @@ module.exports = {
             nom: nom ? nom : UtilisateurExist.nom,
             prenom: prenom ? prenom : UtilisateurExist.prenom,
             numeroTel: numeroTel ? numeroTel : UtilisateurExist.numeroTel,
-            email: email ? email : UtilisateurExist.email,
+           
             sexe: sexe ? sexe : UtilisateurExist.sexe,
             roleId: roleId ? roleId : UtilisateurExist.roleId,
 
           })
             .then(() => {
-              return res.status(201).json({ success: "Utilisateur Modifier" });
+              return res.status(201).json({ success: "Utilisateur Modifier !!" });
             })
             .catch((err) => {
               return res.status(500).json({ error: "erreur lors de la modification de l'utilisateur" });

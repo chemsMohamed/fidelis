@@ -33,10 +33,6 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
-      codeQr: {
-        allowNull: true,
-        type: Sequelize.STRING
-      },
       numeroTel: {
         allowNull: true,
         type: Sequelize.INTEGER
@@ -47,6 +43,10 @@ module.exports = {
       },
       intervention2: {
         allowNull: true,
+        type: Sequelize.INTEGER
+      },
+      bonus: {
+        defaultValue: 0,
         type: Sequelize.INTEGER
       },
       createdAt: {

@@ -29,6 +29,14 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER
       },
+      limite1: {
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
+      limite2: {
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
       codeUnique: {
         allowNull: false,
         type: Sequelize.STRING

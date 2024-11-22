@@ -23,9 +23,9 @@ module.exports = (sequelize, DataTypes) => {
     prenom: DataTypes.STRING,
     localisation: DataTypes.STRING,
     sexe: DataTypes.STRING,
-    codeQr: DataTypes.STRING,
     intervention1: DataTypes. INTEGER,
     intervention2: DataTypes.INTEGER,
+    bonus: DataTypes.INTEGER,
     numeroTel: DataTypes.INTEGER,
     structureId: DataTypes.INTEGER
   }, {

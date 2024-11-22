@@ -35,6 +35,8 @@ module.exports = (sequelize, DataTypes) => {
     codeUnique: DataTypes.STRING,
     codeCommercial: DataTypes.STRING,
     statut: DataTypes.BOOLEAN,
+    limite1: DataTypes.INTEGER,
+    limite2: DataTypes.INTEGER,
     utilisateurId: DataTypes.INTEGER,
     activiteId: DataTypes.INTEGER
   }, {

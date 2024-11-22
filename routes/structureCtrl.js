@@ -50,7 +50,15 @@ module.exports = {
                 return res.status(404).json({ error: "Utilisateur introuvable ", userId });
             } else {
 
-                return res.status(201).json({ structure: structure });
+                return res.status(201).json({ 
+                    id: structure.id, 
+                    nom: structure.nom, 
+                    nomBoss: structure.nomBoss, 
+                    numeroTel: structure.numeroTel, 
+                    localisation: structure.localisation, 
+                    logo: structure.logo, 
+                    statut: structure.statut, 
+                });
             }
         } catch {
             return res.status(404).json({ error: "erreur cote back-end " });
@@ -136,17 +144,22 @@ module.exports = {
         var sexe = req.body.sexe;
         var localisation = req.body.localisation;
 
-        if (!nom || !numeroTel || !prenom || !localisation ) {
+        if (!nom || !numeroTel || !prenom || !localisation || !sexe) {
             return res.status(400).json({ error: "parametres manquants" });
         }
         try {
             const structure = await models.Structure.findOne({ where: { id: userId } });
             if (!structure) {
-                return res.status(404).json({ error: "structure Introuvable" });
+                return res.status(404).json({ error: "Structure Introuvable" });
+            }
+
+            const numeroExiste = await models.Client.findOne({ where: { numeroTel: numeroTel } });
+            if (numeroExiste) {
+                return res.status(400).json({ error: " Ce numero existe deja " });
             }
 
             const client = await models.Client.create({
-                utilisateurId: userId,
+                structureId: userId,
                 nom: nom,
                 prenom: prenom,
                 numeroTel: numeroTel,
