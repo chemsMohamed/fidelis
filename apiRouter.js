@@ -1,10 +1,15 @@
 //les importations 
+//les importations 
+//les importations 
+//les importations 
+//les importations 
 let express = require("express");
 
 const structureCtrl = require("./routes/structureCtrl");
 const models = require ("./models");
 const utilisateurCtrl = require("./routes/utilisateurCtrl");
 const clientCtrl = require("./routes/clientCtrl");
+const dashboadCtrl = require("./routes/dashboadCtrl");
 
 //router
 exports.router = (() => {
@@ -40,7 +45,18 @@ exports.router = (() => {
 
     //route propres au client ......................................................
     apiRouter.route('/client/validation/:id').put(clientCtrl.validation);
-
+    
+    // route propres aux differents dashboard...........................................
+    
+    apiRouter.route('/admin/structures').get(dashboadCtrl.countStructure);
+    apiRouter.route('/admin/structures/salon').get(dashboadCtrl.countStructureSalon);
+    apiRouter.route('/admin/structures/pressing').get(dashboadCtrl.countStructurePressing);
+    apiRouter.route('/admin/utilisateur/commerciaux').get(dashboadCtrl.countCommerciaux);
+    apiRouter.route('/admin/utilisateur/commerciaux/desactives').get(dashboadCtrl.countCommerciauxDesactives);
+    apiRouter.route('/admin/utilisateur/commerciaux/actives').get(dashboadCtrl.countCommerciauxActives);
+    apiRouter.route('/admin/structures/activees').get(dashboadCtrl.countStructureActivees);
+    apiRouter.route('/admin/structures/desactivees').get(dashboadCtrl.countStructureDesactivees);
+    apiRouter.route('/admin/utilisateur/bestCommercial').get(dashboadCtrl.bestCommercial);
 
     return apiRouter;
 })();
