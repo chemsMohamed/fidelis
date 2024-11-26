@@ -234,13 +234,13 @@ module.exports = {
       }
 
       return res.status(201).json({
-        id: commercial.id,
-        nom: commercial.nom,
-        prenom: commercial.prenom,
-        sexe: commercial.sexe,
-        numeroTel: commercial.numeroTel,
-        email: commercial.email,
-        statut: commercial.statut,
+        id: utilisateur.id,
+        nom: utilisateur.nom,
+        prenom: utilisateur.prenom,
+        sexe: utilisateur.sexe,
+        numeroTel: utilisateur.numeroTel,
+        email: utilisateur.email,
+        statut: utilisateur.statut,
       });
     } catch {
       return res.status(404).json({ error: "erreur cote back-end " });

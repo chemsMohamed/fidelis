@@ -29,8 +29,8 @@ module.exports = {
                 return res.status(500).json("Code unique incorrect  ");
             }
         } catch (error) {
-            console.error("Error retrieving test:", err);
-            return res.status(500).json({ error: "Internal Server Error", err });
+            console.error("Error retrieving test:", error);
+            return res.status(500).json({ error: "Internal Server Error", error });
         }
     },
 

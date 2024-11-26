@@ -13,6 +13,9 @@ module.exports = {
 
     validation: async (req, res) => {
 
+        var headerAuth = req.headers["authorization"];
+        var userId = jwt.getUserId(headerAuth);
+
         //donnee en entree...............
         var qte = req.body.qte;
 
@@ -20,8 +23,16 @@ module.exports = {
         var id = req.params.id;
 
 
-
+        if (userId < 0) {
+            return res.status(400).json({ error: "connection perdu" });
+          }
         try {
+
+            const structureCon = await models.Structure.findOne({ where: { id: userId } });
+            if (!structureCon) {
+              return res.status(404).json({ error: "Utilisateur Introuvable " });
+            }
+
             const client = await models.Client.findOne({ where: { id: id } });
 
 
@@ -44,24 +55,24 @@ module.exports = {
             });
 
             // Vérification des conditions pour le bonus
-            if (client.intervention1 > structure.limite1 ) {
+            if (client.intervention1 > structure.limite1) {
                 // Incrémentation du bonus et envoi de la réponse
-                await client.update({ 
+                await client.update({
                     bonus: client.bonus + 1,
                     intervention1: 0
-                 });
+                });
                 return res.status(201).json({
                     FELICITATION: "En tant que client fidèle, veuillez accepter ce petit cadeau offert par la maison !!"
                 });
-            } else if(client.intervention2 >= structure.limite2){
+            } else if (client.intervention2 >= structure.limite2) {
                 // Aucune condition remplie, renvoyer une réponse différente si nécessaire
-                await client.update({ 
+                await client.update({
                     bonus: client.bonus + 1,
-                 });
+                });
                 return res.status(201).json({
                     FELICITATION: "En tant que client fidèle, veuillez accepter ce petit cadeau offert par la maison !!"
                 });
-            }else{
+            } else {
                 return res.status(200).json({ message: "Action du client correctement emregistrer" });
             }
 
