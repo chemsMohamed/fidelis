@@ -36,6 +36,7 @@ exports.router = (() => {
     apiRouter.route('/utilisateur/editStructure/:id').put(utilisateurCtrl.editStructure);
     apiRouter.route('/utilisateur/detailCommercial/:id').get(utilisateurCtrl.detailCommerciale);
     apiRouter.route('/utilisateur/detailStructure/:id').get(utilisateurCtrl.detailStructure);
+    apiRouter.route('/utilisateur/commercial/structure').get(utilisateurCtrl.getStructureFor);
     
     // route supplementaires ..................................
     apiRouter.route('/activite/create/').post(utilisateurCtrl.addActivite);
