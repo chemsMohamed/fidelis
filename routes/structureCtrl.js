@@ -48,7 +48,10 @@ module.exports = {
             const structure = await models.Structure.findOne({ where: { id: userId } });
             if (!structure) {
                 return res.status(404).json({ error: "Utilisateur introuvable ", userId });
-            } else {
+            } 
+            const nbrClient = await models.Client.count({ where: { structureId: structure.id } });
+
+             
 
                 return res.status(201).json({ 
                     id: structure.id, 
@@ -58,8 +61,9 @@ module.exports = {
                     localisation: structure.localisation, 
                     logo: structure.logo, 
                     statut: structure.statut, 
+                    nbrClient: nbrClient,
                 });
-            }
+            
         } catch {
             return res.status(404).json({ error: "erreur cote back-end " });
         }
