@@ -37,6 +37,7 @@ exports.router = (() => {
     apiRouter.route('/utilisateur/detailCommercial/:id').get(utilisateurCtrl.detailCommerciale);
     apiRouter.route('/utilisateur/detailStructure/:id').get(utilisateurCtrl.detailStructure);
     apiRouter.route('/utilisateur/commercial/structure').get(utilisateurCtrl.getStructureFor);
+    apiRouter.route('/utilisateur/edtitMotDePasse').put(utilisateurCtrl.edtitMotDePasse);
     
     // route supplementaires ..................................
     apiRouter.route('/activite/create/').post(utilisateurCtrl.addActivite);
@@ -57,7 +58,8 @@ exports.router = (() => {
     apiRouter.route('/admin/utilisateur/commerciaux/actives').get(dashboadCtrl.countCommerciauxActives);
     apiRouter.route('/admin/structures/activees').get(dashboadCtrl.countStructureActivees);
     apiRouter.route('/admin/structures/desactivees').get(dashboadCtrl.countStructureDesactivees);
-    apiRouter.route('/admin/utilisateur/bestCommercial').get(dashboadCtrl.bestCommercial);
+    apiRouter.route('/structure/listClientFidels').get(dashboadCtrl.clientFidels);
+    //apiRouter.route('/admin/utilisateur/bestCommercial').get(dashboadCtrl.bestCommercial);
 
     return apiRouter;
 })();

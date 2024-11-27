@@ -30,10 +30,10 @@ module.exports = {
                     token
                 });
             } else {
-                return res.status(500).json("Code unique incorrect  ");
+                return res.status(401).json("Code unique incorrect  ");
             }
         } catch (error) {
-            console.error("Error retrieving test:", error);
+            
             return res.status(500).json({ error: "Internal Server Error", error });
         }
     },
@@ -268,7 +268,7 @@ module.exports = {
         }
     
     
-      },
+    },
     
 
 

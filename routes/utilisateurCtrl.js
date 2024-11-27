@@ -61,7 +61,7 @@ module.exports = {
       });
     } catch (error) {
 
-      return res.status(500).json({ error: " impossible de connecter l'utilisateur " });
+      return res.status(500).json({ error: " erreur cote serveur" });
     }
   },
   edtitMotDePasse: async (req, res) => {
@@ -75,7 +75,25 @@ module.exports = {
     const verifMotDePasse = req.body.verifMotDePasse;
 
     // Check for missing parameters
-
+    if (!PASSWORD_REGEX.test(holdMotDePasse)) {
+      return res.status(400).json({
+        error: "Ancien mot de passe invalide (doit avoir une longueur de 4 à 8 et inclure 1 chiffre )",
+      });
+    }
+    if (!PASSWORD_REGEX.test(newMotDePasse)) {
+      return res.status(400).json({
+        error: "Nouveau mot de passe invalide (doit avoir une longueur de 4 à 8 et inclure 1 chiffre )",
+      });
+    }
+    if (!PASSWORD_REGEX.test(verifMotDePasse)) {
+      return res.status(400).json({
+        error: "verification mot de passe invalide (doit avoir une longueur de 4 à 8 et inclure 1 chiffre )",
+      });
+    }
+    
+    if (userId < 0) {
+      return res.status(400).json({ error: "connection perdu" });
+    }
 
     try {
       // Find user by email
@@ -91,17 +109,16 @@ module.exports = {
       }
 
       if (newMotDePasse == verifMotDePasse) {
-        utilisateur.update({
-          motDePasse:newMotDePasse,
-        })
+        bcrypt.hash(newMotDePasse, 5, (err, bcryptedPassword) => {
+          utilisateur.update({
+            motDePasse:bcryptedPassword,
+          })
+          return res.status(200).json({ message: "mot de passe modifier ! " });
+        });
       } else {
         return res.status(402).json({ error: " la verfication du nouveau mot de passe est incorrect  " });
       }
 
-
-      if (utilisateur.statut == false) {
-        return res.status(402).json({ error: " votres compte est bloquer contacter votre administrateur  " });
-      }
 
 
     } catch (error) {
@@ -127,7 +144,12 @@ module.exports = {
     }
 
     if (!nom || !prenom || !numeroTel || !email || !motDePasse || !sexe) {
-      return res.status(400).json({ error: "paramètres manquants" });
+      return res.status(401).json({ error: "paramètres manquants" });
+    }
+    if (!PASSWORD_REGEX.test(newMotDePasse)) {
+      return res.status(403).json({
+        error: "mot de passe invalide (doit avoir une longueur de 4 à 8 et inclure 1 chiffre )",
+      });
     }
     try {
       const admin = await models.Utilisateur.findOne({ where: { id: userId } });
@@ -137,12 +159,12 @@ module.exports = {
 
       const numeroExiste = await models.Utilisateur.findOne({ where: { numeroTel: numeroTel } });
       if (numeroExiste) {
-        return res.status(400).json({ error: " Ce Numero Existe Deja " });
+        return res.status(402).json({ error: " Ce Numero Existe Deja " });
       }
 
       const UtilisateurExist = await models.Utilisateur.findOne({ where: { email: email } });
       if (UtilisateurExist) {
-        return res.status(404).json({ error: " utilisateur existe deja dans la base de donnee " });
+        return res.status(405).json({ error: " utilisateur existe deja dans la base de donnee " });
       }
 
 
@@ -192,6 +214,7 @@ module.exports = {
     }
   },
   createStructure: async (req, res) => {
+
     var headerAuth = req.headers["authorization"];
     var userId = jwt.getUserId(headerAuth);
 
@@ -211,7 +234,7 @@ module.exports = {
     }
 
     if (!nom || !numeroTel || !nomBoss || !localisation || !codeCommercial) {
-      return res.status(400).json({ error: "parametres manquants" });
+      return res.status(401).json({ error: "parametres manquants" });
     }
     try {
 
@@ -222,7 +245,7 @@ module.exports = {
 
       const numeroExiste = await models.Structure.findOne({ where: { numeroTel: numeroTel } });
       if (numeroExiste) {
-        return res.status(400).json({ error: " Ce Numero Existe Deja " });
+        return res.status(402).json({ error: " Ce Numero Existe Deja " });
       }
 
 
@@ -279,6 +302,7 @@ module.exports = {
 
     try {
       const utilisateur = await models.Utilisateur.findOne({ where: { id: userId } });
+      const role = await models.Role.findOne({ where: { id: utilisateur.roleId } });
       if (!utilisateur) {
         return res.status(404).json({ error: "utilisateur introuvable ", userId });
       }
@@ -290,7 +314,8 @@ module.exports = {
         sexe: utilisateur.sexe,
         numeroTel: utilisateur.numeroTel,
         email: utilisateur.email,
-        statut: utilisateur.statut,
+        date: utilisateur.createdAt,
+        role:role.role,
       });
     } catch {
       return res.status(404).json({ error: "erreur cote back-end " });
