@@ -31,11 +31,16 @@ module.exports = {
         return res.status(404).json({ error: " utilisateur n'existe pas " });
       }
 
+
       // Compare password using bcrypt
       const isPasswordValid = await bcrypt.compare(password, utilisateur.motDePasse);
 
       if (!isPasswordValid) {
         return res.status(403).json({ error: "mot de passe incorect " });
+      }
+
+      if (utilisateur.statut == false) {
+        return res.status(402).json({ error: " votres compte est bloquer contacter votre administrateur  " });
       }
 
       const role = await models.Role.findOne({ where: { id: utilisateur.roleId } })
@@ -54,6 +59,51 @@ module.exports = {
         role: role.role,
 
       });
+    } catch (error) {
+
+      return res.status(500).json({ error: " impossible de connecter l'utilisateur " });
+    }
+  },
+  edtitMotDePasse: async (req, res) => {
+
+    var headerAuth = req.headers["authorization"];
+    var userId = jwt.getUserId(headerAuth);
+   
+    // Params
+    const holdMotDePasse = req.body.holdMotDePasse;
+    const newMotDePasse = req.body.newMotDePasse;
+    const verifMotDePasse = req.body.verifMotDePasse;
+
+    // Check for missing parameters
+
+
+    try {
+      // Find user by email
+      const utilisateur = await models.Utilisateur.findOne({ where: { id: userId } });
+      if (!utilisateur) {
+        return res.status(404).json({ error: " Utilisateur Introuvable " });
+      }
+      // Compare password using bcrypt
+      const isPasswordValid = await bcrypt.compare(holdMotDePasse, utilisateur.motDePasse);
+
+      if (!isPasswordValid) {
+        return res.status(403).json({ error: " Ancien mot de passe n'est pas correct " });
+      }
+
+      if (newMotDePasse == verifMotDePasse) {
+        utilisateur.update({
+          motDePasse:newMotDePasse,
+        })
+      } else {
+        return res.status(402).json({ error: " la verfication du nouveau mot de passe est incorrect  " });
+      }
+
+
+      if (utilisateur.statut == false) {
+        return res.status(402).json({ error: " votres compte est bloquer contacter votre administrateur  " });
+      }
+
+
     } catch (error) {
 
       return res.status(500).json({ error: " impossible de connecter l'utilisateur " });
@@ -639,6 +689,8 @@ module.exports = {
       }
 
       const commercial = await models.Utilisateur.findOne({ where: { id: id } });
+      const nbrStructure = await models.Structure.findOne({ where: { codeUnique: commercial.code } });
+
       if (commercial) {
         return res.status(201).json({
           id: commercial.id,
@@ -648,6 +700,7 @@ module.exports = {
           numeroTel: commercial.numeroTel,
           email: commercial.email,
           statut: commercial.statut,
+          nbrStructure: nbrStructure,
         });
       } else {
         return res.status(404).json({ error: "Commercial introuvable " });
@@ -676,7 +729,13 @@ module.exports = {
         return res.status(404).json({ error: "utilisateur introuvable " });
       }
 
+
+
       const structure = await models.Structure.findOne({ where: { id: id } });
+
+      const nbrClient = await models.Client.count({ where: { structureId: structure.id } });
+
+
       if (structure) {
         return res.status(201).json({
           id: structure.id,
@@ -686,6 +745,8 @@ module.exports = {
           localisation: structure.localisation,
           logo: structure.logo,
           statut: structure.statut,
+          nbrClient: nbrClient,
+
         });
       } else {
         return res.status(404).json({ error: "Structure introuvable " });

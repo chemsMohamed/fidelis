@@ -30,7 +30,7 @@ module.exports = {
 
             const structureCon = await models.Structure.findOne({ where: { id: userId } });
             if (!structureCon) {
-              return res.status(404).json({ error: "Utilisateur Introuvable " });
+              return res.status(401).json({ error: "Utilisateur Introuvable " });
             }
 
             const client = await models.Client.findOne({ where: { id: id } });
@@ -41,7 +41,7 @@ module.exports = {
             }
             
             if (client.structureId != structureCon.id) {
-                return res.status(404).json({ error: "Pas de Correspondance Avec la structure Structure " });
+                return res.status(403).json({ error: " Le client n'est pas de la structure " });
             }
 
             // const structure = await models.Structure.findOne({ where: { id: client.structureId } });

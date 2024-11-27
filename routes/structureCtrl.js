@@ -19,6 +19,10 @@ module.exports = {
 
             //const isCode = await bcrypt.compare(password, utilisateur.motDePasse);
             const structure = await models.Structure.findOne({ where: { codeUnique: codeUnique } });
+
+            if (structure.statut == false ) {
+                return res.status(402).json({ error: " votres compte est bloquer contacter votre administrateur  " });
+              }
             if (structure) {
                 const token = jwt.generateTokenForUser(structure);
                 return res.status(201).json({
