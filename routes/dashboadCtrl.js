@@ -103,7 +103,7 @@ module.exports = {
     if (nrStructure) {
       return res.status(201).json({ nrStructure: nrStructure });
     } else {
-      return res.status(404).json({ nrStructure: 0 });
+      return res.status(200).json({ nrStructure: 0 });
     }
   },
   bestCommercial: async (req, res) => {
@@ -165,6 +165,90 @@ module.exports = {
         .catch((error) => {
           return res.status(404).json({ error: "pas d'utilisateur trouvé ", error });
         });
+
+    } catch (error) {
+      return res.status(500).json({ error: "erreur cote back-end", error });
+    }
+
+  },
+  nbrClientFor: async (req, res) => {
+
+    var headerAuth = req.headers["authorization"];
+    var userId = jwt.getUserId(headerAuth);
+
+    if (userId < 0) {
+      return res.status(400).json({ error: "connection perdu" });
+    }
+
+    try {
+
+      const structure = await models.Structure.findOne({ where: { id: userId } });
+      if (!structure) {
+        return res.status(401).json({ error: " Utilisateur introuvable " });
+      }
+
+      
+
+      models.Client.count({
+        where: { structureId:structure.id},
+
+      })
+        .then((client) => {
+          return res.status(201).json({
+            nbrClient: client
+
+          });
+        })
+        .catch(() => {
+          return res.status(200).json({ nbrClient: 0 });
+        });
+
+    } catch (error) {
+      return res.status(500).json({ error: "erreur cote back-end", error });
+    }
+
+  },
+  tauxClientFidele: async (req, res) => {
+
+
+    
+
+    var headerAuth = req.headers["authorization"];
+    var userId = jwt.getUserId(headerAuth);
+
+    if (userId < 0) {
+      return res.status(400).json({ error: "connection perdu" });
+    }
+
+    try {
+
+      const structure = await models.Structure.findOne({ where: { id: userId } });
+      if (!structure) {
+        return res.status(401).json({ error: " Utilisateur introuvable " });
+      }
+      
+      const client = await models.Client.count({
+        where: { structureId:structure.id,
+          bonus: {
+            [Op.gte]: 1 // Sélectionner les clients avec un bonus supérieur ou égal à 1
+          }
+        },
+
+      })
+
+      const nbrClient = await models.Client.count({
+        where: { structureId:structure.id},
+
+      })
+
+      if (!nbrClient) { 
+        return res.status(405).json({ erreur: "elements manquant" })
+      }
+       
+      
+      const pourcentageClient = ( client / nbrClient) * 100;
+
+       return res.status(201).json({ pourcentageClient: pourcentageClient })
 
     } catch (error) {
       return res.status(500).json({ error: "erreur cote back-end", error });

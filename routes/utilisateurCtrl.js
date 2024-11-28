@@ -315,6 +315,7 @@ module.exports = {
         numeroTel: utilisateur.numeroTel,
         email: utilisateur.email,
         date: utilisateur.createdAt,
+        statut: utilisateur.statut,
         role:role.role,
       });
     } catch {

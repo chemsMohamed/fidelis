@@ -51,6 +51,10 @@ module.exports = {
         defaultValue: 0,
         type: Sequelize.INTEGER
       },
+      trace: {
+        defaultValue: 0,
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: true,
         type: Sequelize.DATE

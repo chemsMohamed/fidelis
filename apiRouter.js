@@ -50,6 +50,8 @@ exports.router = (() => {
     
     // route propres aux differents dashboard...........................................
     
+    //dashboard de l'admin..............................................................
+
     apiRouter.route('/admin/structures').get(dashboadCtrl.countStructure);
     apiRouter.route('/admin/structures/salon').get(dashboadCtrl.countStructureSalon);
     apiRouter.route('/admin/structures/pressing').get(dashboadCtrl.countStructurePressing);
@@ -58,8 +60,12 @@ exports.router = (() => {
     apiRouter.route('/admin/utilisateur/commerciaux/actives').get(dashboadCtrl.countCommerciauxActives);
     apiRouter.route('/admin/structures/activees').get(dashboadCtrl.countStructureActivees);
     apiRouter.route('/admin/structures/desactivees').get(dashboadCtrl.countStructureDesactivees);
-    apiRouter.route('/structure/listClientFidels').get(dashboadCtrl.clientFidels);
     //apiRouter.route('/admin/utilisateur/bestCommercial').get(dashboadCtrl.bestCommercial);
+    
+    //dashboard de la structre....................................................................
+    apiRouter.route('/structure/listClientFidels').get(dashboadCtrl.clientFidels);
+    apiRouter.route('/structure/nbrClient').get(dashboadCtrl.nbrClientFor);
+    apiRouter.route('/structure/tauxClientFidele').get(dashboadCtrl.tauxClientFidele);
 
     return apiRouter;
 })();

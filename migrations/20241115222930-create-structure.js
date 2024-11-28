@@ -30,10 +30,12 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       limite1: {
+       defaultValue : 5, 
         allowNull: false,
         type: Sequelize.INTEGER
       },
       limite2: {
+        defaultValue : 10,
         allowNull: false,
         type: Sequelize.INTEGER
       },

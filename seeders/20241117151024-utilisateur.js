@@ -20,7 +20,18 @@ module.exports = {
         code: '$2a$12$/Ealz6ZIUVipr2XZNyKYRu2zfLgMoh/eF9CWlTgfeAl5s.VqNDuTu',
         email: 'chems@gmail.com',
         motDePasse: '$2a$12$96vlfVygnxTkX9dvw8RsquN7L/57Dac4Vx507//9qFr0jsqnt30/m',
-        roleId:1
+        roleId:1,
+        sexe:masculin
+       },
+      { 
+        nom: 'Mohamed',
+        prenom: 'CHEMS',
+        numeroTel: 123456,
+        code: '80628',
+        email: 'ch@gmail.com',
+        motDePasse: '$2a$05$SVqXAFK058djzAUXW0/Uwu0lXI5AE7hwgxbf11jkwQwc66FnGmPsK',
+        roleId:1,
+        sexe:masculin
        },
       
       
