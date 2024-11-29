@@ -3,6 +3,7 @@ let jwt = require("../utils/jwToken");
 const qrcode = require('qrcode');
 let models = require("../models");
 const structure = require("../models/structure");
+const { log } = require("async");
 
 
 
@@ -15,22 +16,22 @@ module.exports = {
 
         var headerAuth = req.headers["authorization"];
         var userId = jwt.getUserId(headerAuth);
-
-        //donnee en entree...............
-        var qte = req.body.qte;
-
         //parametre ....
         var id = req.params.id;
+
+        var qte = req.body.qte;
+
 
 
         if (userId < 0) {
             return res.status(400).json({ error: "connection perdu" });
-          }
+        }
+
         try {
 
             const structureCon = await models.Structure.findOne({ where: { id: userId } });
             if (!structureCon) {
-              return res.status(401).json({ error: "Utilisateur Introuvable " });
+                return res.status(401).json({ error: "Utilisateur Introuvable " });
             }
 
             const client = await models.Client.findOne({ where: { id: id } });
@@ -39,47 +40,108 @@ module.exports = {
             if (!client) {
                 return res.status(404).json({ error: "Client Introuvable" });
             }
-            
+
+            if (client.structureId != structureCon.id) {
+                return res.status(403).json({ error: " Le client n'est pas de la structure " });
+            }
+            console.log(structureCon.typeInterventionId);
+            if (structureCon.typeInterventionId == 1) {
+                console.log(true);
+                await client.update({
+                    trace: client.trace + 1,
+                });
+                if (client.trace >= structureCon.limite) {
+                    await client.update({
+                        trace: 0,
+                        bonus: client.bonus + 1,
+                    });
+                    return res.status(201).json({ message: " felicitation pour votre fidelite , veillez accepter ce petit present offert par la structure " });
+                } else {
+                    return res.status(200).json({ message: " Action du client correctement enregistrer " });
+                }
+            } else {
+                console.log(false);
+                var Qte = parseInt(qte);
+                await client.update({
+
+                    trace: client.trace + Qte,
+                });
+                console.log(structureCon.limite);
+                console.log("trace  ", client.trace);
+
+                if (client.trace > structureCon.limite) {
+
+                    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+                    await client.update({
+                        trace: 0,
+                        bonus: client.bonus + 1,
+                    });
+                    return res.status(201).json({ message: " felicitation pour votre fidelite , veillez accepter ce petit present offert par la structure " });
+                } else {
+                    console.log("|||||||||||||||||||||||||||||||||||");
+
+                    return res.status(200).json({ message: " Action du client correctement enregistrer " });
+                }
+
+            }
+
+
+
+        } catch (error) {
+            console.error("Error retrieving test:", error);
+            return res.status(500).json({ error: "Internal Server Error", error });
+        }
+    },
+    nbrInterventionClient: async (req, res) => {
+
+        var headerAuth = req.headers["authorization"];
+        var userId = jwt.getUserId(headerAuth);
+        //parametre ....
+        var id = req.params.id;
+
+        var nbrIntervention = req.body.qte;
+
+
+
+        if (userId < 0) {
+            return res.status(400).json({ error: "connection perdu" });
+        }
+
+        try {
+
+            const structureCon = await models.Structure.findOne({ where: { id: userId } });
+            if (!structureCon) {
+                return res.status(401).json({ error: "Utilisateur Introuvable " });
+            }
+
+            const client = await models.Client.findOne({ where: { id: id } });
+
+
+            if (!client) {
+                return res.status(404).json({ error: "Client Introuvable" });
+            }
+
             if (client.structureId != structureCon.id) {
                 return res.status(403).json({ error: " Le client n'est pas de la structure " });
             }
 
+            nbrIntervention = (structureCon.limite * client.bonus) + client.trace;
 
-            await client.update({
-                intervention1: client.intervention1 + 1,
-                intervention2: qte,
-            });
 
-            // Vérification des conditions pour le bonus
-            if (client.intervention1 > structureCon.limite1) {
-                // Incrémentation du bonus et envoi de la réponse
-                await client.update({
-                    bonus: client.bonus + 1,
-                    intervention1: 0,
-                    intervention2: 0,
-                });
-                return res.status(201).json({
-                    message: "En tant que client fidèle, veuillez accepter ce petit cadeau offert par la maison !!"
-                });
-            } else if (client.intervention2 >= structureCon.limite2) {
-                // Aucune condition remplie, renvoyer une réponse différente si nécessaire
-                await client.update({
-                    bonus: client.bonus + 1,
-                    intervention2: 0
-                });
-                return res.status(201).json({
-                    message: "En tant que client fidèle, veuillez accepter ce petit cadeau offert par la maison !!"
-                });
-            } else {
-                return res.status(200).json({ message: "Action du client correctement emregistrer" });
-            }
+
+            return res.status(201).json({ nbrIntervention: nbrIntervention });
+
+
+
+
 
         } catch (error) {
-            //console.error("Error retrieving test:", error);
+            console.error("Error retrieving test:", error);
             return res.status(500).json({ error: "Internal Server Error", error });
         }
     },
-    
+
 
 
 }

@@ -37,22 +37,11 @@ module.exports = {
         allowNull: true,
         type: Sequelize.INTEGER
       },
-      intervention1: {
-        defaultValue:0,
-        allowNull: true,
-        type: Sequelize.INTEGER
-      },
-      intervention2: {
-        defaultValue:0,
-        allowNull: true,
-        type: Sequelize.INTEGER
-      },
       bonus: {
         defaultValue: 0,
         type: Sequelize.INTEGER
       },
       trace: {
-        defaultValue: 0,
         type: Sequelize.INTEGER
       },
       createdAt: {

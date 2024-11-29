@@ -146,7 +146,7 @@ module.exports = {
     if (!nom || !prenom || !numeroTel || !email || !motDePasse || !sexe) {
       return res.status(401).json({ error: "paramètres manquants" });
     }
-    if (!PASSWORD_REGEX.test(newMotDePasse)) {
+    if (!PASSWORD_REGEX.test(motDePasse)) {
       return res.status(403).json({
         error: "mot de passe invalide (doit avoir une longueur de 4 à 8 et inclure 1 chiffre )",
       });
@@ -224,8 +224,8 @@ module.exports = {
     var logo = req.body.logo;
     var localisation = req.body.localisation;
     var codeCommercial = req.body.codeCommercial;
-    var limite1 = req.body.limite1;
-    var limite2 = req.body.limite2;
+    var limite = req.body.limite;
+    var typeInterventionId = req.body.typeInterventionId;
     var activiteId = req.body.activiteId;
 
 
@@ -275,9 +275,9 @@ module.exports = {
           localisation: localisation,
           codeUnique: generateUniqueCode(),
           codeCommercial: codeCommercial,
-          limite1: limite1,
-          limite2: limite2,
+          limite: limite,
           logo: logo,
+          typeInterventionId: typeInterventionId,
           activiteId: activiteId,
         })
         if (structure) {
@@ -811,6 +811,27 @@ module.exports = {
     } catch {
       return res.status(404).json({ error: "erreur cote back-end " });
     }
+  },
+  getAllTypeIntervension: async (req, res) => {
+
+    let fields = req.query.fields;
+    let limit = parseInt(req.query.limit);
+    let offset = parseInt(req.query.offset);
+    let order = req.query.order;
+
+    const typeIntervention = await models.TypeIntervention.findAll({
+
+      order: [order != null ? order.split(":") : ["id", "ASC"]],
+      attributes: fields !== "*" && fields != null ? fields.split(",") : null,
+      limit: !isNaN(limit) ? limit : null,
+      offset: !isNaN(offset) ? offset : null,
+
+    })
+
+    if (typeIntervention) {
+      return res.status(201).json({ typeIntervention: typeIntervention });
+    }
+
   },
 
 }

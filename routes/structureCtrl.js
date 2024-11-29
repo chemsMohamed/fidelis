@@ -164,10 +164,6 @@ module.exports = {
                 return res.status(404).json({ error: "Structure Introuvable" });
             }
 
-            const numeroExiste = await models.Client.findOne({ where: { numeroTel: numeroTel } });
-            if (numeroExiste) {
-                return res.status(400).json({ error: " Ce numero existe deja " });
-            }
 
             const client = await models.Client.create({
                 structureId: userId,

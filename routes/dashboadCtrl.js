@@ -25,7 +25,7 @@ module.exports = {
         allStructure: structure,
       });
     } else {
-      return res.status(200).json({ nbreStructure: 0 });
+      return res.status(200).json({ allStructure: 0 });
     }
 
   },
@@ -249,6 +249,76 @@ module.exports = {
       const pourcentageClient = ( client / nbrClient) * 100;
 
        return res.status(201).json({ pourcentageClient: pourcentageClient })
+
+    } catch (error) {
+      return res.status(500).json({ error: "erreur cote back-end", error });
+    }
+
+  },
+  nbrClientFidels: async (req, res) => {
+
+    var headerAuth = req.headers["authorization"];
+    var userId = jwt.getUserId(headerAuth);
+
+    if (userId < 0) {
+      return res.status(400).json({ error: "connection perdu" });
+    }
+
+    try {
+      const structure = await models.Structure.findOne({ where: { id: userId } });
+      if (!structure) {
+        return res.status(401).json({ error: " Utilisateur introuvable " });
+      }
+      
+     const nbrClientFidels = await models.Client.count({
+        where: { structureId:structure.id,
+          bonus: {
+            [Op.gte]: 1 // Sélectionner les clients avec un bonus supérieur ou égal à 1
+          }
+        },
+      })
+
+      if (nbrClientFidels) {
+        
+        return res.status(201).json({nbrClientFidels: nbrClientFidels});
+      }else{
+        return res.status(200).json({nbrClientFidels: 0});
+        
+      }
+        
+
+    } catch (error) {
+      return res.status(500).json({ error: "erreur cote back-end", error });
+    }
+
+  },
+  nbrClientAleatoire: async (req, res) => {
+
+    var headerAuth = req.headers["authorization"];
+    var userId = jwt.getUserId(headerAuth);
+
+    if (userId < 0) {
+      return res.status(400).json({ error: "connection perdu" });
+    }
+
+    try {
+      const structure = await models.Structure.findOne({ where: { id: userId } });
+      if (!structure) {
+        return res.status(401).json({ error: " Utilisateur introuvable " });
+      }
+      
+     const nbrClientAleatoire = await models.Client.count({
+        where: { structureId:structure.id,  bonus:0 }
+      })
+
+      if (nbrClientAleatoire) {
+        
+        return res.status(201).json({nbrClientAleatoire: nbrClientAleatoire});
+      }else{
+        return res.status(200).json({nbrClientAleatoire: 0});
+        
+      }
+        
 
     } catch (error) {
       return res.status(500).json({ error: "erreur cote back-end", error });

@@ -12,6 +12,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       
+      models.Structure.belongsTo(models.TypeIntervention,{
+        fareingnKey:{
+          allowNull:false
+        }
+      });
       models.Structure.belongsTo(models.Activite,{
         fareingnKey:{
           allowNull:false
@@ -35,8 +40,8 @@ module.exports = (sequelize, DataTypes) => {
     codeUnique: DataTypes.STRING,
     codeCommercial: DataTypes.STRING,
     statut: DataTypes.BOOLEAN,
-    limite1: DataTypes.INTEGER,
-    limite2: DataTypes.INTEGER,
+    limite: DataTypes.INTEGER,
+    typeInterventionId: DataTypes.INTEGER,
     utilisateurId: DataTypes.INTEGER,
     activiteId: DataTypes.INTEGER
   }, {

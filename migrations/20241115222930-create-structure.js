@@ -29,12 +29,15 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER
       },
-      limite1: {
-       defaultValue : 5, 
+      typeInterventionId: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references:{
+          model:'TypeInterventions',
+          key: 'id'
+        }
       },
-      limite2: {
+      limite: {
         defaultValue : 10,
         allowNull: false,
         type: Sequelize.INTEGER

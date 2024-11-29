@@ -44,9 +44,11 @@ exports.router = (() => {
     apiRouter.route('/roles').get(utilisateurCtrl.getAllRole);
     apiRouter.route('/commercial').get(utilisateurCtrl.getCommercial);
     apiRouter.route('/activites').get(structureCtrl.getAllActivite);
+    apiRouter.route('/typeIntervention').get(utilisateurCtrl.getAllTypeIntervension);
 
     //route propres au client ......................................................
-    apiRouter.route('/client/validation/:id').put(clientCtrl.validation);
+    apiRouter.route('/client/validation/:id').put(clientCtrl.validation); 
+    apiRouter.route('/client/intervention/:id').put(clientCtrl.nbrInterventionClient); 
     
     // route propres aux differents dashboard...........................................
     
@@ -64,6 +66,8 @@ exports.router = (() => {
     
     //dashboard de la structre....................................................................
     apiRouter.route('/structure/listClientFidels').get(dashboadCtrl.clientFidels);
+    apiRouter.route('/structure/nbrClientFidels').get(dashboadCtrl.nbrClientFidels);
+    apiRouter.route('/structure/nbrClientAleatoire').get(dashboadCtrl.nbrClientAleatoire);
     apiRouter.route('/structure/nbrClient').get(dashboadCtrl.nbrClientFor);
     apiRouter.route('/structure/tauxClientFidele').get(dashboadCtrl.tauxClientFidele);
 
