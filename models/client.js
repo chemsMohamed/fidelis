@@ -26,7 +26,8 @@ module.exports = (sequelize, DataTypes) => {
     bonus: DataTypes.INTEGER,
     numeroTel: DataTypes.INTEGER,
     structureId: DataTypes.INTEGER,
-    trace: DataTypes.INTEGER
+    trace: DataTypes.INTEGER,
+    intervention: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Client',

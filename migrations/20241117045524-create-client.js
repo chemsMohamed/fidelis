@@ -44,6 +44,10 @@ module.exports = {
       trace: {
         type: Sequelize.INTEGER
       },
+      intervention: {
+        defaultValue:0,
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: true,
         type: Sequelize.DATE

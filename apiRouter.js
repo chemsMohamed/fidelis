@@ -62,7 +62,7 @@ exports.router = (() => {
     apiRouter.route('/admin/utilisateur/commerciaux/actives').get(dashboadCtrl.countCommerciauxActives);
     apiRouter.route('/admin/structures/activees').get(dashboadCtrl.countStructureActivees);
     apiRouter.route('/admin/structures/desactivees').get(dashboadCtrl.countStructureDesactivees);
-    //apiRouter.route('/admin/utilisateur/bestCommercial').get(dashboadCtrl.bestCommercial);
+    apiRouter.route('/admin/utilisateur/bestCommercial').get(dashboadCtrl.bestCommercial);
     
     //dashboard de la structre....................................................................
     apiRouter.route('/structure/listClientFidels').get(dashboadCtrl.clientFidels);

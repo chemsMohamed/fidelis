@@ -49,6 +49,7 @@ module.exports = {
                 console.log(true);
                 await client.update({
                     trace: client.trace + 1,
+                    intervention: client.intervention +1
                 });
                 if (client.trace >= structureCon.limite) {
                     await client.update({
@@ -65,13 +66,14 @@ module.exports = {
                 await client.update({
 
                     trace: client.trace + Qte,
+                    intervention: client.intervention + Qte
                 });
                 console.log(structureCon.limite);
                 console.log("trace  ", client.trace);
 
                 if (client.trace > structureCon.limite) {
 
-                    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                    
 
                     await client.update({
                         trace: 0,
@@ -79,7 +81,6 @@ module.exports = {
                     });
                     return res.status(201).json({ message: " felicitation pour votre fidelite , veillez accepter ce petit present offert par la structure " });
                 } else {
-                    console.log("|||||||||||||||||||||||||||||||||||");
 
                     return res.status(200).json({ message: " Action du client correctement enregistrer " });
                 }
@@ -126,14 +127,9 @@ module.exports = {
                 return res.status(403).json({ error: " Le client n'est pas de la structure " });
             }
 
-            nbrIntervention = (structureCon.limite * client.bonus) + client.trace;
-
-
+            nbrIntervention = client.intervention ;
 
             return res.status(201).json({ nbrIntervention: nbrIntervention });
-
-
-
 
 
         } catch (error) {

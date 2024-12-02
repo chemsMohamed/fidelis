@@ -1,6 +1,6 @@
 //les iportations
 const {Op} = require('sequelize');
-const Sequelize = require('sequelize');
+const { sequelize } = require('sequelize');
 let jwt = require("../utils/jwToken");
 let models = require("../models");
 const structure = require("../models/structure");
@@ -110,13 +110,14 @@ module.exports = {
 
 
     try {
-      const bestCommercial = await models.Utilisateur.findOne({
-        attributes: ['id', 'nom'[Sequelize.literal('(SELECT COUNT(*) FROM Structures WHERE Structures.codeCommercial = Utilisateurs.code)'), 'structureCount']],
-        order: [['structureCount', 'DESC']],
+      const mostFrequentCodeCommercial = await models.Structure.findAll({
+        attributes: ['codeCommercial', [sequelize.fn('count', sequelize.col('codeCommercial')), 'count']],
+        group: ['codeCommercial'],
+        order: [['count', 'DESC']],
         limit: 1
       });
       if (bestCommercial) {
-        return res.status(201).json({ bestCommercial: bestCommercial });
+        return res.status(201).json({ bestCommercial: mostFrequentCodeCommercial });
       }
 
       console.log(bestCommercial); // Affichera l'utilisateur ayant le plus grand nombre de clients
@@ -247,8 +248,9 @@ module.exports = {
        
       
       const pourcentageClient = ( client / nbrClient) * 100;
+      const pourcentageArrondi = pourcentageClient.toFixed(2);
 
-       return res.status(201).json({ pourcentageClient: pourcentageClient })
+       return res.status(201).json({ pourcentageClient: pourcentageArrondi })
 
     } catch (error) {
       return res.status(500).json({ error: "erreur cote back-end", error });
@@ -325,4 +327,42 @@ module.exports = {
     }
 
   },
+  getAllClient: async (req, res) => {
+    //getting auth header
+    var headerAuth = req.headers["authorization"];
+    var userId = jwt.getUserId(headerAuth);
+
+    try {
+
+        const structure = await models.Structure.findOne({ where: { id: userId } });
+        if (!structure) {
+            return res.status(404).json({ error: "utilisateur introuvable" });
+        }
+
+        let fields = req.query.fields;
+        let limit = parseInt(req.query.limit);
+        let offset = parseInt(req.query.offset);
+        let order = req.query.order;
+
+        models.Client.findAll({
+            where: { structureId: userId },
+            order: [order != null ? order.split(":") : ["id", "ASC"]],
+            attributes: fields !== "*" && fields != null ? fields.split(",") : null,
+            limit: !isNaN(limit) ? limit : null,
+            offset: !isNaN(offset) ? offset : null,
+        })
+            .then((allClients) => {
+              
+                return res.status(201).json({
+                    allClients: allClients
+
+                });
+            })
+            .catch((error) => {
+                return res.status(404).json({ error: "impossible de trouver des clients " });
+            });
+    } catch (error) {
+        return res.status(404).json({ error: "erreur cote back-end" });
+    }
+},
 }
