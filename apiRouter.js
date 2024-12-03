@@ -48,7 +48,8 @@ exports.router = (() => {
 
     //route propres au client ......................................................
     apiRouter.route('/client/validation/:id').put(clientCtrl.validation); 
-    apiRouter.route('/client/intervention/:id').put(clientCtrl.nbrInterventionClient); 
+    apiRouter.route('/client/intervention/:id').get(clientCtrl.nbrInterventionClient); 
+    apiRouter.route('/client/validationType2/:id').put(clientCtrl.validationType2); 
     
     // route propres aux differents dashboard...........................................
     
