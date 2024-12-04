@@ -135,7 +135,10 @@ module.exports = {
 
             const client = await models.Client.findOne({ where: { id: id } });
             if (client) {
-                return res.status(201).json({ client: client });
+                return res.status(201).json({ 
+                    client: client,
+                    typeIntervention: structure.typeInterventionId,
+                 });
             } else {
                 return res.status(404).json({ error: "Client introuvable " });
             }

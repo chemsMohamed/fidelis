@@ -55,8 +55,8 @@ module.exports = {
         prenom: utilisateur.prenom,
         phone: utilisateur.numeroTel,
         email: utilisateur.email,
-        token,
         role: role.role,
+        token,
 
       });
     } catch (error) {
@@ -496,6 +496,7 @@ module.exports = {
     var nomBoss = req.body.nomBoss;
     var localisation = req.body.localisation;
     var numeroTel = req.body.numeroTel;
+    var typeIntervention = req.body.typeIntervention;
 
     var id = req.params.id;
 
@@ -523,6 +524,7 @@ module.exports = {
           nomBoss: nomBoss ? nomBoss : structure.nomBoss,
           localisation: localisation ? localisation : structure.localisation,
           numeroTel: numeroTel ? numeroTel : structure.numeroTel,
+          typeIntervention: typeIntervention ? typeIntervention : structure.typeIntervention,
 
 
         })
