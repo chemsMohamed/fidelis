@@ -67,6 +67,7 @@ exports.router = (() => {
     
     //dashboard de la structre....................................................................
     apiRouter.route('/structure/listClientFidels').get(dashboadCtrl.clientFidels);
+    apiRouter.route('/structure/listClientEnAttente').get(dashboadCtrl.clientEnAttente);
     apiRouter.route('/structure/nbrClientFidels').get(dashboadCtrl.nbrClientFidels);
     apiRouter.route('/structure/nbrClientAleatoire').get(dashboadCtrl.nbrClientAleatoire);
     apiRouter.route('/structure/nbrClient').get(dashboadCtrl.nbrClientFor);
