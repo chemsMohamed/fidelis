@@ -20,10 +20,12 @@ module.exports = {
             //const isCode = await bcrypt.compare(password, utilisateur.motDePasse);
             const structure = await models.Structure.findOne({ where: { codeUnique: codeUnique } });
 
-            if (structure.statut == false) {
-                return res.status(402).json({ error: " votres compte est bloquer contacter votre administrateur  " });
-            }
             if (structure) {
+
+                if (structure.statut == false) {
+                    return res.status(402).json({ error: " votres compte est bloquer contacter votre administrateur  " });
+                }
+                
                 const token = jwt.generateTokenForUser(structure);
                 return res.status(201).json({
                     nom: structure.nom,
@@ -45,7 +47,7 @@ module.exports = {
         var userId = jwt.getUserId(headerAuth);
 
         if (userId < 0) {
-            return res.status(400).json({ error: "connection perdu", userId });
+            return res.status(400).json({ error: "connection perdu" });
         }
 
         try {
@@ -72,7 +74,7 @@ module.exports = {
             });
 
         } catch {
-            return res.status(404).json({ error: "erreur cote back-end " });
+            return res.status(500).json({ error: "erreur cote back-end " });
         }
     },
 
@@ -81,10 +83,16 @@ module.exports = {
         var headerAuth = req.headers["authorization"];
         var userId = jwt.getUserId(headerAuth);
 
+        if (userId < 0) {
+            return res.status(400).json({ error: "connection perdu" });
+        }
+
         try {
 
             const structure = await models.Structure.findOne({ where: { id: userId } });
+
             if (!structure) {
+
                 return res.status(404).json({ error: "utilisateur introuvable" });
             }
 
@@ -107,10 +115,10 @@ module.exports = {
                     });
                 })
                 .catch((error) => {
-                    return res.status(404).json({ error: "impossible de trouver des clients " });
+                    return res.status(403).json({ error: "impossible de trouver des clients " });
                 });
         } catch (error) {
-            return res.status(404).json({ error: "erreur cote back-end" });
+            return res.status(500).json({ error: "erreur cote back-end" });
         }
     },
 
@@ -129,6 +137,7 @@ module.exports = {
         try {
 
             const structure = await models.Structure.findOne({ where: { id: userId } });
+
             if (!structure) {
                 return res.status(404).json({ error: "Utilisateur introuvable " });
             }
@@ -140,11 +149,11 @@ module.exports = {
                     typeIntervention: structure.typeInterventionId,
                  });
             } else {
-                return res.status(404).json({ error: "Client introuvable " });
+                return res.status(403).json({ error: "Client introuvable " });
             }
 
         } catch {
-            return res.status(404).json({ error: "erreur cote back-end " });
+            return res.status(500).json({ error: "erreur cote back-end " });
         }
     },
 
@@ -159,12 +168,17 @@ module.exports = {
         var localisation = req.body.localisation;
 
         if (!nom || !numeroTel || !prenom || !localisation || !sexe) {
-            return res.status(400).json({ error: "parametres manquants" });
+            return res.status(401).json({ error: "parametres manquants" });
+        }
+
+        if (userId < 0) {
+            return res.status(400).json({ error: "connection perdu", userId });
         }
         try {
             const structure = await models.Structure.findOne({ where: { id: userId } });
+
             if (!structure) {
-                return res.status(404).json({ error: "Structure Introuvable" });
+                return res.status(404).json({ error: "utilisateur Introuvable" });
             }
 
 
@@ -185,7 +199,7 @@ module.exports = {
 
         } catch (err) {
             console.error("Error retrieving test:", err);
-            return res.status(500).json({ error: "Internal Server Error" });
+            return res.status(500).json({ error: "erreur cote back-end" });
         }
     },
     getAllActivite: async (req, res) => {
@@ -226,7 +240,10 @@ module.exports = {
         var id = req.params.id;
 
         if (!nom || !prenom || !numeroTel || !sexe || !localisation) {
-            return res.status(400).json({ error: "paramètres manquants" });
+            return res.status(401).json({ error: "paramètres manquants" });
+        }
+        if (userId < 0) {
+            return res.status(400).json({ error: "connection perdu", userId });
         }
 
         try {
@@ -238,7 +255,7 @@ module.exports = {
             }
             const client = await models.Client.findOne({ where: { id: id } });
             if (!client) {
-                return res.status(404).json({ error: " utilisateur selectionner n'existe pas " });
+                return res.status(403).json({ error: " le client selectionner n'existe pas " });
             } else {
                 // console.log("is ok ");
 
@@ -256,7 +273,7 @@ module.exports = {
                         return res.status(201).json({ success: "Client  Modifier !!" });
                     })
                     .catch((err) => {
-                        return res.status(500).json({ error: "erreur lors de la modification de l'utilisateur", err });
+                        return res.status(405).json({ error: "erreur lors de la modification du client ", err });
                     });
 
 

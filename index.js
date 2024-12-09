@@ -11,6 +11,8 @@ let server = express();
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
 
+server.use(cors());
+
 //CORS Configuration (Place at the top for optimal effect)
 //CORS Configuration (Place at the top for optimal effect)
 // server.use((req, res, next) => {
@@ -24,7 +26,6 @@ server.use(bodyParser.json());
 //     Credential:true,
 //     optionSuccessStatus:200
 // }
-server.use(cors());
 //configuration de la route 
 
 server.get("/", (req, res) => {

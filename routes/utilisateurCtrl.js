@@ -55,12 +55,13 @@ module.exports = {
         prenom: utilisateur.prenom,
         phone: utilisateur.numeroTel,
         email: utilisateur.email,
-        role: role.role,
         token,
+        role: role.role,
 
       });
     } catch (error) {
-
+      console.log(error);
+      
       return res.status(500).json({ error: " erreur cote serveur" });
     }
   },
@@ -76,7 +77,7 @@ module.exports = {
 
     // Check for missing parameters
     if (!PASSWORD_REGEX.test(holdMotDePasse)) {
-      return res.status(400).json({
+      return res.status(406).json({
         error: "Ancien mot de passe invalide (doit avoir une longueur de 4 à 8 et inclure 1 chiffre )",
       });
     }
@@ -86,13 +87,13 @@ module.exports = {
       });
     }
     if (!PASSWORD_REGEX.test(verifMotDePasse)) {
-      return res.status(400).json({
+      return res.status(405).json({
         error: "verification mot de passe invalide (doit avoir une longueur de 4 à 8 et inclure 1 chiffre )",
       });
     }
     
     if (userId < 0) {
-      return res.status(400).json({ error: "connection perdu" });
+      return res.status(401).json({ error: "connection perdu" });
     }
 
     try {
@@ -496,7 +497,7 @@ module.exports = {
     var nomBoss = req.body.nomBoss;
     var localisation = req.body.localisation;
     var numeroTel = req.body.numeroTel;
-    var typeIntervention = req.body.typeIntervention;
+    var typeInterventionId = req.body.typeInterventionId;
 
     var id = req.params.id;
 
@@ -524,7 +525,7 @@ module.exports = {
           nomBoss: nomBoss ? nomBoss : structure.nomBoss,
           localisation: localisation ? localisation : structure.localisation,
           numeroTel: numeroTel ? numeroTel : structure.numeroTel,
-          typeIntervention: typeIntervention ? typeIntervention : structure.typeIntervention,
+          typeInterventionId: typeInterventionId ? typeInterventionId : structure.typeInterventionId,
 
 
         })
@@ -774,6 +775,7 @@ module.exports = {
           logo: structure.logo,
           statut: structure.statut,
           nbrClient: nbrClient,
+          typeInterventionId: structure.typeInterventionId,
 
         });
       } else {
@@ -793,9 +795,7 @@ module.exports = {
     try {
 
       //const activiteExist = await models.Activite.findOne({ where: { domaine: newActivite } });
-      if (activiteExist) {
-
-      }
+      
 
       const activiteExist = await models.Activite.findOne({ where: { domaine: newActivite } });
       if (!activiteExist) {
@@ -807,11 +807,11 @@ module.exports = {
           return res.status(201).json("Nouveau Domaine d'Activite Cree  " + activite.domaine);
         }
       } else {
-        return res.status(403).json({ error: "Ce Domaine  D'activite Existe Deja" });
+        return res.status(400).json({ error: "Ce Domaine  D'activite Existe Deja" });
       }
 
     } catch {
-      return res.status(404).json({ error: "erreur cote back-end " });
+      return res.status(500).json({ error: "erreur cote back-end " });
     }
   },
   getAllTypeIntervension: async (req, res) => {
