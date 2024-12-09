@@ -56,7 +56,7 @@ module.exports = {
                         trace: 0,
                         bonus: client.bonus + 1,
                     });
-                    return res.status(201).json({ message: " felicitation pour votre fidelite , veillez accepter ce petit present offert par la structure " });
+                    return res.status(201).json({ message: " félicitation pour votre fidélité , veillez accepter ce petit présent offert par la structure " });
                 } else {
                     return res.status(200).json({ message: " Action du client correctement enregistrer " });
                 }
@@ -71,7 +71,7 @@ module.exports = {
 
         } catch (error) {
             console.error("Error retrieving test:", error);
-            return res.status(500).json({ error: "Internal Server Error", error });
+            return res.status(500).json({ error: "erreur coté back-end ", error });
         }
     },
     validationType2: async (req, res) => {
@@ -124,7 +124,7 @@ module.exports = {
                     trace: 0,
                     bonus: client.bonus + 1,
                 });
-                return res.status(201).json({ message: " felicitation pour votre fidelite , veillez accepter ce petit present offert par la structure " });
+                return res.status(201).json({ message: " félicitation pour votre fidélité , veillez accepter ce petit présent offert par la structure " });
             } else {
 
                 return res.status(200).json({ message: " Action du client correctement enregistrer " });
@@ -134,7 +134,7 @@ module.exports = {
 
         } catch (error) {
             console.error("Error retrieving test:", error);
-            return res.status(500).json({ error: "Internal Server Error", error });
+            return res.status(500).json({ error: "erreur coté back-end ", error });
         }
     },
     nbrInterventionClient: async (req, res) => {
@@ -176,7 +176,7 @@ module.exports = {
 
         } catch (error) {
             console.error("Error retrieving test:", error);
-            return res.status(500).json({ error: "Internal Server Error", error });
+            return res.status(500).json({ error: "erreur coté back-end", error });
         }
     },
 

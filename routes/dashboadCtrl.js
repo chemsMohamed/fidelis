@@ -125,6 +125,52 @@ module.exports = {
       console.error('Erreur lors de la requête:', error);
     }
   },
+  clientEnAttente: async (req, res) => {
+
+    var headerAuth = req.headers["authorization"];
+    var userId = jwt.getUserId(headerAuth);
+
+    if (userId < 0) {
+      return res.status(400).json({ error: "connection perdu" });
+    }
+
+    try {
+      const structure = await models.Structure.findOne({ where: { id: userId } });
+      if (!structure) {
+        return res.status(401).json({ error: " Utilisateur introuvable " });
+      }
+
+      let fields = req.query.fields;
+      let limit = parseInt(req.query.limit);
+      let offset = parseInt(req.query.offset);
+      let order = req.query.order;
+
+      models.Client.findAll({
+        where: { structureId:structure.id,
+          bonus: 0,
+        },
+        
+        order: [order != null ? order.split(":") : ["bonus", "ASC"]],
+        attributes: fields !== "*" && fields != null ? fields.split(",") : null,
+        limit: !isNaN(limit) ? limit : null,
+        offset: !isNaN(offset) ? offset : null,
+
+      })
+        .then((client) => {
+          return res.status(201).json({
+            listClientEnAttente: client
+
+          });
+        })
+        .catch((error) => {
+          return res.status(404).json({ error: "pas d'utilisateur trouvé ", error });
+        });
+
+    } catch (error) {
+      return res.status(500).json({ error: "erreur cote back-end", error });
+    }
+
+  },
   clientFidels: async (req, res) => {
 
     var headerAuth = req.headers["authorization"];
@@ -365,4 +411,5 @@ module.exports = {
         return res.status(404).json({ error: "erreur cote back-end" });
     }
 },
+
 }
