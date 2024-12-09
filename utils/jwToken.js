@@ -12,7 +12,7 @@ module.exports={
         },
          jwtSignSecret,
         {
-            expiresIn: '6m'
+            expiresIn: '10m'
         })
          
     },

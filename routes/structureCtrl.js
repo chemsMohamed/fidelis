@@ -202,6 +202,7 @@ module.exports = {
             return res.status(500).json({ error: "erreur cote back-end" });
         }
     },
+
     getAllActivite: async (req, res) => {
 
         let fields = req.query.fields;
@@ -223,6 +224,7 @@ module.exports = {
         }
 
     },
+
     editClient: async (req, res) => {
         //evoie des autorisation en entete 
 
@@ -288,10 +290,6 @@ module.exports = {
 
 
     },
-
-
-
-
 
 
 }

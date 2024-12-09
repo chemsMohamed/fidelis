@@ -26,6 +26,9 @@ server.use(cors());
 //     Credential:true,
 //     optionSuccessStatus:200
 // }
+
+
+
 //configuration de la route 
 
 server.get("/", (req, res) => {
